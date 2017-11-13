@@ -101,7 +101,8 @@ void get_time(u8 *time)
 	LCD_ShowString(30,220,200,16,16,"TCP TX:");	
 	   						  	   						  	 
 	LCD_ShowString(30,270,200,16,16,"TCP RX:");	   						  	 
-	LCD_ShowString(30,290,200,16,16,"TCP TX:");	   						  	 
+	LCD_ShowString(30,290,200,16,16,"TCP TX:");	   
+LCD_ShowString(30,290,200,16,16,"TCP TX:");	   	
 	POINT_COLOR=BLUE;	   
  
  	uip_ipaddr(ipaddr, 192,168,1,16);	//设置本地设置IP地址
