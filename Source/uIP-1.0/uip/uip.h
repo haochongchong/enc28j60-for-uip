@@ -1214,7 +1214,7 @@ struct uip_udp_conn {
   u8_t  ttl;          /**< Default time-to-live. */
 
   /** The application state. */
-  uip_udp_appstate_t appstate;
+  //uip_udp_appstate_t appstate;
 };
 
 /**

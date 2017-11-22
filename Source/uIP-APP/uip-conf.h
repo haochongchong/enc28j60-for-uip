@@ -77,7 +77,7 @@ typedef unsigned short uip_stats_t;
 #define UIP_CONF_LOGGING         1
 
 //UDP支持开关
-#define UIP_CONF_UDP             0
+#define UIP_CONF_UDP             1
 
 //UDP校验和开关
 #define UIP_CONF_UDP_CHECKSUMS   1	    

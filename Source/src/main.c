@@ -217,73 +217,20 @@ int main(void)
 	uip_ipaddr(ipaddr, 255,255,255,0);	//设置网络掩码
 	uip_setnetmask(ipaddr);
 
-	uip_listen(HTONS(1200));			//监听1200端口,用于TCP Server
-	uip_listen(HTONS(80));				//监听80端口,用于Web Server
-  	tcp_client_reconnect();	   		    //尝试连接到TCP Server端,用于TCP Client
+	//uip_listen(HTONS(1200));			//监听1200端口,用于TCP Server
+	//uip_listen(HTONS(80));				//监听80端口,用于Web Server
+  	//tcp_client_reconnect();	   		    //尝试连接到TCP Server端,用于TCP Client
+	
+//------------------------------------------------------------------------------------------------
+	uip_ipaddr(ipaddr, 192,168,1,16);	//设置本地设置IP地址
+	uip_udp_new(&ipaddr, HTONS(12345));
+	
+//------------------------------------------------------------------------------------------------
 	
 	
 	while (1)
 	{
 		uip_polling();	//处理uip事件，必须插入到用户程序的循环体中  
-		if(tcp_server_tsta!=tcp_server_sta)//TCP Server状态改变
-		{															 
-			if(tcp_server_sta&(1<<7))
-			{
-				printf("TCP Server Connected   ");
-			}
-			else
-			{
-				printf("TCP Server Disconnected");
-			}
- 			if(tcp_server_sta&(1<<6))	//收到新数据
-			{
-    			printf("TCP Server RX:%s\r\n",tcp_server_databuf);//打印数据
-				tcp_server_sta&=~(1<<6);		//标记数据已经被处理	
-			}
-			tcp_server_tsta=tcp_server_sta;
-		}
-		if(1)//TCP Server 请求发送数据
-		{
-			if(tcp_server_sta&(1<<7))	//连接还存在
-			{
-				sprintf((char*)tcp_server_databuf,"TCP Server OK %d\r\n",tcnt);	 
-				tcp_server_sta|=1<<5;//标记有数据需要发送
-				tcnt++;
-			}
-		}
-		if(tcp_client_tsta!=tcp_client_sta)//TCP Client状态改变
-		{															 
-			if(tcp_client_sta&(1<<7))
-			{
-				printf("TCP Client Connected   ");
-			}
-			else
-			{
-				printf("TCP Client Disconnected");
-			}
- 			if(tcp_client_sta&(1<<6))	//收到新数据
-			{
-    			printf("TCP Client RX:%s\r\n",tcp_client_databuf);//打印数据
-				tcp_client_sta&=~(1<<6);		//标记数据已经被处理	
-			}
-			tcp_client_tsta=tcp_client_sta;
-		}
-		if(0)//TCP Client 请求发送数据
-		{
-			if(tcp_client_sta&(1<<7))	//连接还存在
-			{
-				sprintf((char*)tcp_client_databuf,"TCP Client OK %d\r\n",tcnt);	 
-				tcp_client_sta|=1<<5;//标记有数据需要发送
-				tcnt++;
-			}
-		}
-	} 
-	
-	//lwip_demo(NULL);	  //初始化内核，启动LwIP相关
-
-	while (1)
-	{
-	    //exit(0);	
 	}
 }
 
