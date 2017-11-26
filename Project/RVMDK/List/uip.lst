@@ -901,7 +901,7 @@ N//日志开关
 N#define UIP_CONF_LOGGING         1
 N
 N//UDP支持开关
-N#define UIP_CONF_UDP             0
+N#define UIP_CONF_UDP             1
 N
 N//UDP校验和开关
 N#define UIP_CONF_UDP_CHECKSUMS   1	    
@@ -1399,7 +1399,15 @@ S#endif /* UIP_CONF_BYTE_ORDER */
 S
 S/** @} */
 S/*------------------------------------------------------------------------------*/
+Svoid udp_demo_appcall(void);
 S
+S
+S
+S
+S//定义应用程序回调函数 
+S#ifndef UIP_UDP_APPCALL
+S#define UIP_UDP_APPCALL udp_demo_appcall //定义回调函数为 tcp_demo_appcall 
+S#endif
 S/**
 S * \name Appication specific configurations
 S * @{
@@ -2912,7 +2920,15 @@ N#endif /* UIP_CONF_BYTE_ORDER */
 N
 N/** @} */
 N/*------------------------------------------------------------------------------*/
+Nvoid udp_demo_appcall(void);
 N
+N
+N
+N
+N//定义应用程序回调函数 
+N#ifndef UIP_UDP_APPCALL
+N#define UIP_UDP_APPCALL udp_demo_appcall //定义回调函数为 tcp_demo_appcall 
+N#endif
 N/**
 N * \name Appication specific configurations
 N * @{
@@ -3261,61 +3277,61 @@ X#define uip_poll_conn(conn) do { uip_conn = conn;                              
 N
 N
 N#if UIP_UDP
-X#if 0
-S/**
-S * Periodic processing for a UDP connection identified by its number.
-S *
-S * This function is essentially the same as uip_periodic(), but for
-S * UDP connections. It is called in a similar fashion as the
-S * uip_periodic() function:
-S \code
-S  for(i = 0; i < UIP_UDP_CONNS; i++) {
-S    uip_udp_periodic(i);
-S    if(uip_len > 0) {
-S      devicedriver_send();
-S    }
-S  }
-S \endcode
-S *
-S * \note As for the uip_periodic() function, special care has to be
-S * taken when using uIP together with ARP and Ethernet:
-S \code
-S  for(i = 0; i < UIP_UDP_CONNS; i++) {
-S    uip_udp_periodic(i);
-S    if(uip_len > 0) {
-S      uip_arp_out();
-S      ethernet_devicedriver_send();
-S    }
-S  }
-S \endcode
-S *
-S * \param conn The number of the UDP connection to be processed.
-S *
-S * \hideinitializer
-S */
-S#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn]; \
-S                                uip_process(UIP_UDP_TIMER); } while (0)
+X#if 1
+N/**
+N * Periodic processing for a UDP connection identified by its number.
+N *
+N * This function is essentially the same as uip_periodic(), but for
+N * UDP connections. It is called in a similar fashion as the
+N * uip_periodic() function:
+N \code
+N  for(i = 0; i < UIP_UDP_CONNS; i++) {
+N    uip_udp_periodic(i);
+N    if(uip_len > 0) {
+N      devicedriver_send();
+N    }
+N  }
+N \endcode
+N *
+N * \note As for the uip_periodic() function, special care has to be
+N * taken when using uIP together with ARP and Ethernet:
+N \code
+N  for(i = 0; i < UIP_UDP_CONNS; i++) {
+N    uip_udp_periodic(i);
+N    if(uip_len > 0) {
+N      uip_arp_out();
+N      ethernet_devicedriver_send();
+N    }
+N  }
+N \endcode
+N *
+N * \param conn The number of the UDP connection to be processed.
+N *
+N * \hideinitializer
+N */
+N#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn]; \
+N                                uip_process(UIP_UDP_TIMER); } while (0)
 X#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn];                                 uip_process(UIP_UDP_TIMER); } while (0)
-S
-S/**
-S * Periodic processing for a UDP connection identified by a pointer to
-S * its structure.
-S *
-S * Same as uip_udp_periodic() but takes a pointer to the actual
-S * uip_conn struct instead of an integer as its argument. This
-S * function can be used to force periodic processing of a specific
-S * connection.
-S *
-S * \param conn A pointer to the uip_udp_conn struct for the connection
-S * to be processed.
-S *
-S * \hideinitializer
-S */
-S#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn; \
-S                                         uip_process(UIP_UDP_TIMER); } while (0)
+N
+N/**
+N * Periodic processing for a UDP connection identified by a pointer to
+N * its structure.
+N *
+N * Same as uip_udp_periodic() but takes a pointer to the actual
+N * uip_conn struct instead of an integer as its argument. This
+N * function can be used to force periodic processing of a specific
+N * connection.
+N *
+N * \param conn A pointer to the uip_udp_conn struct for the connection
+N * to be processed.
+N *
+N * \hideinitializer
+N */
+N#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn; \
+N                                         uip_process(UIP_UDP_TIMER); } while (0)
 X#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn;                                          uip_process(UIP_UDP_TIMER); } while (0)
-S
-S
+N
+N
 N#endif /* UIP_UDP */
 N
 N/**
@@ -4141,25 +4157,26 @@ N/** @} */
 N
 N
 N#if UIP_UDP
-X#if 0
-S/**
-S * Representation of a uIP UDP connection.
-S */
-Sstruct uip_udp_conn {
-S  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
-S  u16_t lport;        /**< The local port number in network byte order. */
-S  u16_t rport;        /**< The remote port number in network byte order. */
-S  u8_t  ttl;          /**< Default time-to-live. */
-S
-S  /** The application state. */
-S  uip_udp_appstate_t appstate;
-S};
-S
-S/**
-S * The current UDP connection.
-S */
-Sextern struct uip_udp_conn *uip_udp_conn;
-Sextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+X#if 1
+N/**
+N * Representation of a uIP UDP connection.
+N */
+Nstruct uip_udp_conn {
+N  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
+N  u16_t lport;        /**< The local port number in network byte order. */
+N  u16_t rport;        /**< The remote port number in network byte order. */
+N  u8_t  ttl;          /**< Default time-to-live. */
+N
+N  /** The application state. */
+N  //uip_udp_appstate_t appstate;
+N};
+N
+N/**
+N * The current UDP connection.
+N */
+Nextern struct uip_udp_conn *uip_udp_conn;
+Nextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+Xextern struct uip_udp_conn uip_udp_conns[10];
 N#endif /* UIP_UDP */
 N
 N/**
@@ -4211,14 +4228,14 @@ N    uip_stats_t synrst;   /**< Number of SYNs for closed ports,
 N			     triggering a RST. */
 N  } tcp;                  /**< TCP statistics. */
 N#if UIP_UDP
-X#if 0
-S  struct {
-S    uip_stats_t drop;     /**< Number of dropped UDP segments. */
-S    uip_stats_t recv;     /**< Number of recived UDP segments. */
-S    uip_stats_t sent;     /**< Number of sent UDP segments. */
-S    uip_stats_t chkerr;   /**< Number of UDP segments with a bad
-S			     checksum. */
-S  } udp;                  /**< UDP statistics. */
+X#if 1
+N  struct {
+N    uip_stats_t drop;     /**< Number of dropped UDP segments. */
+N    uip_stats_t recv;     /**< Number of recived UDP segments. */
+N    uip_stats_t sent;     /**< Number of sent UDP segments. */
+N    uip_stats_t chkerr;   /**< Number of UDP segments with a bad
+N			     checksum. */
+N  } udp;                  /**< UDP statistics. */
 N#endif /* UIP_UDP */
 N};
 N
@@ -4304,8 +4321,8 @@ N#define UIP_UDP_SEND_CONN 4     /* Tells uIP that a UDP datagram
 N				   should be constructed in the
 N				   uip_buf buffer. */
 N#if UIP_UDP
-X#if 0
-S#define UIP_UDP_TIMER     5
+X#if 1
+N#define UIP_UDP_TIMER     5
 N#endif /* UIP_UDP */
 N
 N/* The TCP states used in the uip_conn->tcpstateflags. */
@@ -5263,12 +5280,12 @@ N#else
 Nuip_ipaddr_t uip_hostaddr, uip_draddr, uip_netmask;
 N#endif /* UIP_FIXEDADDR */
 N
-N//static const uip_ipaddr_t all_ones_addr =
-N//#if UIP_CONF_IPV6
-N//  {0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
-N//#else /* UIP_CONF_IPV6 */
-N//  {0xffff,0xffff};
-N//#endif /* UIP_CONF_IPV6 */
+Nstatic const uip_ipaddr_t all_ones_addr =
+N#if UIP_CONF_IPV6
+S  {0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff};
+N#else /* UIP_CONF_IPV6 */
+N  {0xffff,0xffff};
+N#endif /* UIP_CONF_IPV6 */
 N
 Nstatic const uip_ipaddr_t all_zeroes_addr =
 N#if UIP_CONF_IPV6
@@ -5287,7 +5304,7 @@ S					  UIP_ETHADDR3,
 S					  UIP_ETHADDR4,
 S					  UIP_ETHADDR5}};
 N#else
-Nstruct uip_eth_addr uip_ethaddr = {{0,0,0,0,0,0}};
+Nstruct uip_eth_addr uip_ethaddr = {{0x04,0x02,0x35,0x00,0x00,0x01}};
 N#endif
 N
 N#ifndef UIP_CONF_EXTERNAL_BUFFER
@@ -5329,9 +5346,10 @@ Xu16_t uip_listenports[40];
 N                             /* The uip_listenports list all currently
 N				listning ports. */
 N#if UIP_UDP
-X#if 0
-Sstruct uip_udp_conn *uip_udp_conn;
-Sstruct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+X#if 1
+Nstruct uip_udp_conn *uip_udp_conn;
+Nstruct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+Xstruct uip_udp_conn uip_udp_conns[10];
 N#endif /* UIP_UDP */
 N
 Nstatic u16_t ipid;           /* Ths ipid variable is an increasing
@@ -6676,10 +6694,11 @@ N  lastport = 1024;
 N#endif /* UIP_ACTIVE_OPEN */
 N
 N#if UIP_UDP
-X#if 0
-S  for(c = 0; c < UIP_UDP_CONNS; ++c) {
-S    uip_udp_conns[c].lport = 0;
-S  }
+X#if 1
+N  for(c = 0; c < UIP_UDP_CONNS; ++c) {
+X  for(c = 0; c < 10; ++c) {
+N    uip_udp_conns[c].lport = 0;
+N  }
 N#endif /* UIP_UDP */
 N  
 N
@@ -6768,50 +6787,56 @@ N}
 N#endif /* UIP_ACTIVE_OPEN */
 N/*---------------------------------------------------------------------------*/
 N#if UIP_UDP
-X#if 0
-Sstruct uip_udp_conn *
-Suip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport)
-S{
-S  register struct uip_udp_conn *conn;
-S  
-S  /* Find an unused local port. */
-S again:
-S  ++lastport;
-S
-S  if(lastport >= 32000) {
-S    lastport = 4096;
-S  }
-S  
-S  for(c = 0; c < UIP_UDP_CONNS; ++c) {
-S    if(uip_udp_conns[c].lport == htons(lastport)) {
-S      goto again;
-S    }
-S  }
-S
-S
-S  conn = 0;
-S  for(c = 0; c < UIP_UDP_CONNS; ++c) {
-S    if(uip_udp_conns[c].lport == 0) {
-S      conn = &uip_udp_conns[c];
-S      break;
-S    }
-S  }
-S
-S  if(conn == 0) {
-S    return 0;
-S  }
-S  
-S  conn->lport = HTONS(lastport);
-S  conn->rport = rport;
-S  if(ripaddr == NULL) {
-S    memset(conn->ripaddr, 0, sizeof(uip_ipaddr_t));
-S  } else {
-S    uip_ipaddr_copy(&conn->ripaddr, ripaddr);
-S  }
-S  conn->ttl = UIP_TTL;
-S  
-S  return conn;
-S}
+X#if 1
+Nstruct uip_udp_conn *
+Nuip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport)
+N{
+N  register struct uip_udp_conn *conn;
+N  
+N  /* Find an unused local port. */
+N again:
+N  ++lastport;
+N
+N  if(lastport >= 32000) {
+N    lastport = 4096;
+N  }
+N  
+N  for(c = 0; c < UIP_UDP_CONNS; ++c) {
+X  for(c = 0; c < 10; ++c) {
+N    if(uip_udp_conns[c].lport == htons(lastport)) {
+N      goto again;
+N    }
+N  }
+N
+N
+N  conn = 0;
+N  for(c = 0; c < UIP_UDP_CONNS; ++c) {
+X  for(c = 0; c < 10; ++c) {
+N    if(uip_udp_conns[c].lport == 0) {
+N      conn = &uip_udp_conns[c];
+N      break;
+N    }
+N  }
+N
+N  if(conn == 0) {
+N    return 0;
+N  }
+N  
+N  conn->lport = HTONS(lastport);
+X  conn->lport = (u16_t)((((u16_t) (lastport)) << 8) | (((u16_t) (lastport)) >> 8));
+N  conn->rport = rport;
+N  if(ripaddr == NULL) {
+X  if(ripaddr == 0) {
+N    memset(conn->ripaddr, 0, sizeof(uip_ipaddr_t));
+N  } else {
+N    uip_ipaddr_copy(&conn->ripaddr, ripaddr);
+X    do { ((u16_t *)&conn->ripaddr)[0] = ((u16_t *)ripaddr)[0]; ((u16_t *)&conn->ripaddr)[1] = ((u16_t *)ripaddr)[1]; } while(0);
+N  }
+N  conn->ttl = UIP_TTL;
+X  conn->ttl = 64;
+N  
+N  return conn;
+N}
 N#endif /* UIP_UDP */
 N/*---------------------------------------------------------------------------*/
 Nvoid
@@ -6987,10 +7012,11 @@ N{
 N  register struct uip_conn *uip_connr = uip_conn;
 N
 N#if UIP_UDP
-X#if 0
-S  if(flag == UIP_UDP_SEND_CONN) {
-S    goto udp_send;
-S  }
+X#if 1
+N  if(flag == UIP_UDP_SEND_CONN) {
+X  if(flag == 4) {
+N    goto udp_send;
+N  }
 N#endif /* UIP_UDP */
 N  
 N  uip_sappdata = uip_appdata = &uip_buf[UIP_IPTCPH_LEN + UIP_LLH_LEN];
@@ -7151,19 +7177,24 @@ N    }
 N    goto drop;
 N  }
 N#if UIP_UDP
-X#if 0
-S  if(flag == UIP_UDP_TIMER) {
-S    if(uip_udp_conn->lport != 0) {
-S      uip_conn = NULL;
-S      uip_sappdata = uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
-S      uip_len = uip_slen = 0;
-S      uip_flags = UIP_POLL;
-S      UIP_UDP_APPCALL();
-S      goto udp_send;
-S    } else {
-S      goto drop;
-S    }
-S  }
+X#if 1
+N  if(flag == UIP_UDP_TIMER) {
+X  if(flag == 5) {
+N    if(uip_udp_conn->lport != 0) {
+N      uip_conn = NULL;
+X      uip_conn = 0;
+N      uip_sappdata = uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
+X      uip_sappdata = uip_appdata = &uip_buf[14 + (8 + 20)];
+N      uip_len = uip_slen = 0;
+N      uip_flags = UIP_POLL;
+X      uip_flags = 8;
+N      UIP_UDP_APPCALL();
+X      udp_demo_appcall();
+N      goto udp_send;
+N    } else {
+N      goto drop;
+N    }
+N  }
 N#endif
 N
 N  /* This is where the input processing starts. */
@@ -7319,10 +7350,11 @@ N    goto tcp_input;
 N  }
 N
 N#if UIP_UDP
-X#if 0
-S  if(BUF->proto == UIP_PROTO_UDP) {
-S    goto udp_input;
-S  }
+X#if 1
+N  if(BUF->proto == UIP_PROTO_UDP) {
+X  if(((struct uip_tcpip_hdr *)&uip_buf[14])->proto == 17) {
+N    goto udp_input;
+N  }
 N#endif /* UIP_UDP */
 N
 N#if !UIP_CONF_IPV6
@@ -7464,94 +7496,128 @@ S
 N#endif /* !UIP_CONF_IPV6 */
 N
 N#if UIP_UDP
-X#if 0
-S  /* UDP input processing. */
-S udp_input:
-S  /* UDP processing is really just a hack. We don't do anything to the
-S     UDP/IP headers, but let the UDP application do all the hard
-S     work. If the application sets uip_slen, it has a packet to
-S     send. */
-S#if UIP_UDP_CHECKSUMS
+X#if 1
+N  /* UDP input processing. */
+N udp_input:
+N  /* UDP processing is really just a hack. We don't do anything to the
+N     UDP/IP headers, but let the UDP application do all the hard
+N     work. If the application sets uip_slen, it has a packet to
+N     send. */
+N#if UIP_UDP_CHECKSUMS
+X#if 1
+N  uip_len = uip_len - UIP_IPUDPH_LEN;
+X  uip_len = uip_len - (8 + 20);
+N  uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
+X  uip_appdata = &uip_buf[14 + (8 + 20)];
+N  if(UDPBUF->udpchksum != 0 && uip_udpchksum() != 0xffff) {
+X  if(((struct uip_udpip_hdr *)&uip_buf[14])->udpchksum != 0 && uip_udpchksum() != 0xffff) {
+N    UIP_STAT(++uip_stat.udp.drop);
+X    ++uip_stat . udp . drop;
+N    UIP_STAT(++uip_stat.udp.chkerr);
+X    ++uip_stat . udp . chkerr;
+N    UIP_LOG("udp: bad checksum.");
+X    uip_log("udp: bad checksum.");
+N    goto drop;
+N  }
+N#else /* UIP_UDP_CHECKSUMS */
 S  uip_len = uip_len - UIP_IPUDPH_LEN;
-S  uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
-S  if(UDPBUF->udpchksum != 0 && uip_udpchksum() != 0xffff) {
-S    UIP_STAT(++uip_stat.udp.drop);
-S    UIP_STAT(++uip_stat.udp.chkerr);
-S    UIP_LOG("udp: bad checksum.");
-S    goto drop;
-S  }
-S#else /* UIP_UDP_CHECKSUMS */
-S  uip_len = uip_len - UIP_IPUDPH_LEN;
-S#endif /* UIP_UDP_CHECKSUMS */
-S  /* Demultiplex this UDP packet between the UDP "connections". */
-S  for(uip_udp_conn = &uip_udp_conns[0];
-S      uip_udp_conn < &uip_udp_conns[UIP_UDP_CONNS];
-S      ++uip_udp_conn) {
-S    /* If the local UDP port is non-zero, the connection is considered
-S       to be used. If so, the local port number is checked against the
-S       destination port number in the received packet. If the two port
-S       numbers match, the remote port number is checked if the
-S       connection is bound to a remote port. Finally, if the
-S       connection is bound to a remote IP address, the source IP
-S       address of the packet is checked. */
-S    if(uip_udp_conn->lport != 0 &&
-S       UDPBUF->destport == uip_udp_conn->lport &&
-S       (uip_udp_conn->rport == 0 ||
-S        UDPBUF->srcport == uip_udp_conn->rport) &&
-S       (uip_ipaddr_cmp(uip_udp_conn->ripaddr, all_zeroes_addr) ||
-S	uip_ipaddr_cmp(uip_udp_conn->ripaddr, all_ones_addr) ||
-S	uip_ipaddr_cmp(BUF->srcipaddr, uip_udp_conn->ripaddr))) {
-S      goto udp_found;
-S    }
-S  }
-S  UIP_LOG("udp: no matching connection found");
-S  goto drop;
-S  
-S udp_found:
-S  uip_conn = NULL;
-S  uip_flags = UIP_NEWDATA;
-S  uip_sappdata = uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
-S  uip_slen = 0;
-S  UIP_UDP_APPCALL();
-S udp_send:
-S  if(uip_slen == 0) {
-S    goto drop;
-S  }
-S  uip_len = uip_slen + UIP_IPUDPH_LEN;
-S
-S#if UIP_CONF_IPV6
+N#endif /* UIP_UDP_CHECKSUMS */
+N  /* Demultiplex this UDP packet between the UDP "connections". */
+N  for(uip_udp_conn = &uip_udp_conns[0];
+N      uip_udp_conn < &uip_udp_conns[UIP_UDP_CONNS];
+X      uip_udp_conn < &uip_udp_conns[10];
+N      ++uip_udp_conn) {
+N    /* If the local UDP port is non-zero, the connection is considered
+N       to be used. If so, the local port number is checked against the
+N       destination port number in the received packet. If the two port
+N       numbers match, the remote port number is checked if the
+N       connection is bound to a remote port. Finally, if the
+N       connection is bound to a remote IP address, the source IP
+N       address of the packet is checked. */
+N    if(uip_udp_conn->lport != 0 &&
+N       UDPBUF->destport == uip_udp_conn->lport &&
+X       ((struct uip_udpip_hdr *)&uip_buf[14])->destport == uip_udp_conn->lport &&
+N       (uip_udp_conn->rport == 0 ||
+N        UDPBUF->srcport == uip_udp_conn->rport) &&
+X        ((struct uip_udpip_hdr *)&uip_buf[14])->srcport == uip_udp_conn->rport) &&
+N       (uip_ipaddr_cmp(uip_udp_conn->ripaddr, all_zeroes_addr) ||
+X       ((((u16_t *)uip_udp_conn->ripaddr)[0] == ((u16_t *)all_zeroes_addr)[0] && ((u16_t *)uip_udp_conn->ripaddr)[1] == ((u16_t *)all_zeroes_addr)[1]) ||
+N	uip_ipaddr_cmp(uip_udp_conn->ripaddr, all_ones_addr) ||
+X	(((u16_t *)uip_udp_conn->ripaddr)[0] == ((u16_t *)all_ones_addr)[0] && ((u16_t *)uip_udp_conn->ripaddr)[1] == ((u16_t *)all_ones_addr)[1]) ||
+N	uip_ipaddr_cmp(BUF->srcipaddr, uip_udp_conn->ripaddr))) {
+X	(((u16_t *)((struct uip_tcpip_hdr *)&uip_buf[14])->srcipaddr)[0] == ((u16_t *)uip_udp_conn->ripaddr)[0] && ((u16_t *)((struct uip_tcpip_hdr *)&uip_buf[14])->srcipaddr)[1] == ((u16_t *)uip_udp_conn->ripaddr)[1]))) {
+N      goto udp_found;
+N    }
+N  }
+N  UIP_LOG("udp: no matching connection found");
+X  uip_log("udp: no matching connection found");
+N  goto drop;
+N  
+N udp_found:
+N  uip_conn = NULL;
+X  uip_conn = 0;
+N  uip_flags = UIP_NEWDATA;
+X  uip_flags = 2;
+N  uip_sappdata = uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
+X  uip_sappdata = uip_appdata = &uip_buf[14 + (8 + 20)];
+N  uip_slen = 0;
+N  UIP_UDP_APPCALL();
+X  udp_demo_appcall();
+N udp_send:
+N  if(uip_slen == 0) {
+N    goto drop;
+N  }
+N  uip_len = uip_slen + UIP_IPUDPH_LEN;
+X  uip_len = uip_slen + (8 + 20);
+N
+N#if UIP_CONF_IPV6
 S  /* For IPv6, the IP length field does not include the IPv6 IP header
 S     length. */
 S  BUF->len[0] = ((uip_len - UIP_IPH_LEN) >> 8);
 S  BUF->len[1] = ((uip_len - UIP_IPH_LEN) & 0xff);
-S#else /* UIP_CONF_IPV6 */
-S  BUF->len[0] = (uip_len >> 8);
-S  BUF->len[1] = (uip_len & 0xff);
-S#endif /* UIP_CONF_IPV6 */
-S
-S  BUF->ttl = uip_udp_conn->ttl;
-S  BUF->proto = UIP_PROTO_UDP;
-S
-S  UDPBUF->udplen = HTONS(uip_slen + UIP_UDPH_LEN);
-S  UDPBUF->udpchksum = 0;
-S
-S  BUF->srcport  = uip_udp_conn->lport;
-S  BUF->destport = uip_udp_conn->rport;
-S
-S  uip_ipaddr_copy(BUF->srcipaddr, uip_hostaddr);
-S  uip_ipaddr_copy(BUF->destipaddr, uip_udp_conn->ripaddr);
-S   
-S  uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPTCPH_LEN];
-S
-S#if UIP_UDP_CHECKSUMS
-S  /* Calculate UDP checksum. */
-S  UDPBUF->udpchksum = ~(uip_udpchksum());
-S  if(UDPBUF->udpchksum == 0) {
-S    UDPBUF->udpchksum = 0xffff;
-S  }
-S#endif /* UIP_UDP_CHECKSUMS */
-S  
-S  goto ip_send_nolen;
+N#else /* UIP_CONF_IPV6 */
+N  BUF->len[0] = (uip_len >> 8);
+X  ((struct uip_tcpip_hdr *)&uip_buf[14])->len[0] = (uip_len >> 8);
+N  BUF->len[1] = (uip_len & 0xff);
+X  ((struct uip_tcpip_hdr *)&uip_buf[14])->len[1] = (uip_len & 0xff);
+N#endif /* UIP_CONF_IPV6 */
+N
+N  BUF->ttl = uip_udp_conn->ttl;
+X  ((struct uip_tcpip_hdr *)&uip_buf[14])->ttl = uip_udp_conn->ttl;
+N  BUF->proto = UIP_PROTO_UDP;
+X  ((struct uip_tcpip_hdr *)&uip_buf[14])->proto = 17;
+N
+N  UDPBUF->udplen = HTONS(uip_slen + UIP_UDPH_LEN);
+X  ((struct uip_udpip_hdr *)&uip_buf[14])->udplen = (u16_t)((((u16_t) (uip_slen + 8)) << 8) | (((u16_t) (uip_slen + 8)) >> 8));
+N  UDPBUF->udpchksum = 0;
+X  ((struct uip_udpip_hdr *)&uip_buf[14])->udpchksum = 0;
+N
+N  BUF->srcport  = uip_udp_conn->lport;
+X  ((struct uip_tcpip_hdr *)&uip_buf[14])->srcport  = uip_udp_conn->lport;
+N  BUF->destport = uip_udp_conn->rport;
+X  ((struct uip_tcpip_hdr *)&uip_buf[14])->destport = uip_udp_conn->rport;
+N
+N  uip_ipaddr_copy(BUF->srcipaddr, uip_hostaddr);
+X  do { ((u16_t *)((struct uip_tcpip_hdr *)&uip_buf[14])->srcipaddr)[0] = ((u16_t *)uip_hostaddr)[0]; ((u16_t *)((struct uip_tcpip_hdr *)&uip_buf[14])->srcipaddr)[1] = ((u16_t *)uip_hostaddr)[1]; } while(0);
+N  uip_ipaddr_copy(BUF->destipaddr, uip_udp_conn->ripaddr);
+X  do { ((u16_t *)((struct uip_tcpip_hdr *)&uip_buf[14])->destipaddr)[0] = ((u16_t *)uip_udp_conn->ripaddr)[0]; ((u16_t *)((struct uip_tcpip_hdr *)&uip_buf[14])->destipaddr)[1] = ((u16_t *)uip_udp_conn->ripaddr)[1]; } while(0);
+N   
+N  uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPTCPH_LEN];
+X  uip_appdata = &uip_buf[14 + (20 + 20)];
+N
+N#if UIP_UDP_CHECKSUMS
+X#if 1
+N  /* Calculate UDP checksum. */
+N  UDPBUF->udpchksum = ~(uip_udpchksum());
+X  ((struct uip_udpip_hdr *)&uip_buf[14])->udpchksum = ~(uip_udpchksum());
+N  if(UDPBUF->udpchksum == 0) {
+X  if(((struct uip_udpip_hdr *)&uip_buf[14])->udpchksum == 0) {
+N    UDPBUF->udpchksum = 0xffff;
+X    ((struct uip_udpip_hdr *)&uip_buf[14])->udpchksum = 0xffff;
+N  }
+N#endif /* UIP_UDP_CHECKSUMS */
+N  
+N  goto ip_send_nolen;
 N#endif /* UIP_UDP */
 N  
 N  /* TCP input processing. */
@@ -8435,8 +8501,8 @@ N  BUF->tcpchksum = ~(uip_tcpchksum());
 X  ((struct uip_tcpip_hdr *)&uip_buf[14])->tcpchksum = ~(uip_tcpchksum());
 N  
 N#if UIP_UDP
-X#if 0
-S ip_send_nolen:
+X#if 1
+N ip_send_nolen:
 N#endif
 N
 N#if UIP_CONF_IPV6

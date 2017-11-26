@@ -821,7 +821,7 @@ N//日志开关
 N#define UIP_CONF_LOGGING         1
 N
 N//UDP支持开关
-N#define UIP_CONF_UDP             0
+N#define UIP_CONF_UDP             1
 N
 N//UDP校验和开关
 N#define UIP_CONF_UDP_CHECKSUMS   1	    
@@ -1319,7 +1319,15 @@ S#endif /* UIP_CONF_BYTE_ORDER */
 S
 S/** @} */
 S/*------------------------------------------------------------------------------*/
+Svoid udp_demo_appcall(void);
 S
+S
+S
+S
+S//定义应用程序回调函数 
+S#ifndef UIP_UDP_APPCALL
+S#define UIP_UDP_APPCALL udp_demo_appcall //定义回调函数为 tcp_demo_appcall 
+S#endif
 S/**
 S * \name Appication specific configurations
 S * @{
@@ -2832,7 +2840,15 @@ N#endif /* UIP_CONF_BYTE_ORDER */
 N
 N/** @} */
 N/*------------------------------------------------------------------------------*/
+Nvoid udp_demo_appcall(void);
 N
+N
+N
+N
+N//定义应用程序回调函数 
+N#ifndef UIP_UDP_APPCALL
+N#define UIP_UDP_APPCALL udp_demo_appcall //定义回调函数为 tcp_demo_appcall 
+N#endif
 N/**
 N * \name Appication specific configurations
 N * @{
@@ -3181,61 +3197,61 @@ X#define uip_poll_conn(conn) do { uip_conn = conn;                              
 N
 N
 N#if UIP_UDP
-X#if 0
-S/**
-S * Periodic processing for a UDP connection identified by its number.
-S *
-S * This function is essentially the same as uip_periodic(), but for
-S * UDP connections. It is called in a similar fashion as the
-S * uip_periodic() function:
-S \code
-S  for(i = 0; i < UIP_UDP_CONNS; i++) {
-S    uip_udp_periodic(i);
-S    if(uip_len > 0) {
-S      devicedriver_send();
-S    }
-S  }
-S \endcode
-S *
-S * \note As for the uip_periodic() function, special care has to be
-S * taken when using uIP together with ARP and Ethernet:
-S \code
-S  for(i = 0; i < UIP_UDP_CONNS; i++) {
-S    uip_udp_periodic(i);
-S    if(uip_len > 0) {
-S      uip_arp_out();
-S      ethernet_devicedriver_send();
-S    }
-S  }
-S \endcode
-S *
-S * \param conn The number of the UDP connection to be processed.
-S *
-S * \hideinitializer
-S */
-S#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn]; \
-S                                uip_process(UIP_UDP_TIMER); } while (0)
+X#if 1
+N/**
+N * Periodic processing for a UDP connection identified by its number.
+N *
+N * This function is essentially the same as uip_periodic(), but for
+N * UDP connections. It is called in a similar fashion as the
+N * uip_periodic() function:
+N \code
+N  for(i = 0; i < UIP_UDP_CONNS; i++) {
+N    uip_udp_periodic(i);
+N    if(uip_len > 0) {
+N      devicedriver_send();
+N    }
+N  }
+N \endcode
+N *
+N * \note As for the uip_periodic() function, special care has to be
+N * taken when using uIP together with ARP and Ethernet:
+N \code
+N  for(i = 0; i < UIP_UDP_CONNS; i++) {
+N    uip_udp_periodic(i);
+N    if(uip_len > 0) {
+N      uip_arp_out();
+N      ethernet_devicedriver_send();
+N    }
+N  }
+N \endcode
+N *
+N * \param conn The number of the UDP connection to be processed.
+N *
+N * \hideinitializer
+N */
+N#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn]; \
+N                                uip_process(UIP_UDP_TIMER); } while (0)
 X#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn];                                 uip_process(UIP_UDP_TIMER); } while (0)
-S
-S/**
-S * Periodic processing for a UDP connection identified by a pointer to
-S * its structure.
-S *
-S * Same as uip_udp_periodic() but takes a pointer to the actual
-S * uip_conn struct instead of an integer as its argument. This
-S * function can be used to force periodic processing of a specific
-S * connection.
-S *
-S * \param conn A pointer to the uip_udp_conn struct for the connection
-S * to be processed.
-S *
-S * \hideinitializer
-S */
-S#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn; \
-S                                         uip_process(UIP_UDP_TIMER); } while (0)
+N
+N/**
+N * Periodic processing for a UDP connection identified by a pointer to
+N * its structure.
+N *
+N * Same as uip_udp_periodic() but takes a pointer to the actual
+N * uip_conn struct instead of an integer as its argument. This
+N * function can be used to force periodic processing of a specific
+N * connection.
+N *
+N * \param conn A pointer to the uip_udp_conn struct for the connection
+N * to be processed.
+N *
+N * \hideinitializer
+N */
+N#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn; \
+N                                         uip_process(UIP_UDP_TIMER); } while (0)
 X#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn;                                          uip_process(UIP_UDP_TIMER); } while (0)
-S
-S
+N
+N
 N#endif /* UIP_UDP */
 N
 N/**
@@ -4061,25 +4077,26 @@ N/** @} */
 N
 N
 N#if UIP_UDP
-X#if 0
-S/**
-S * Representation of a uIP UDP connection.
-S */
-Sstruct uip_udp_conn {
-S  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
-S  u16_t lport;        /**< The local port number in network byte order. */
-S  u16_t rport;        /**< The remote port number in network byte order. */
-S  u8_t  ttl;          /**< Default time-to-live. */
-S
-S  /** The application state. */
-S  uip_udp_appstate_t appstate;
-S};
-S
-S/**
-S * The current UDP connection.
-S */
-Sextern struct uip_udp_conn *uip_udp_conn;
-Sextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+X#if 1
+N/**
+N * Representation of a uIP UDP connection.
+N */
+Nstruct uip_udp_conn {
+N  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
+N  u16_t lport;        /**< The local port number in network byte order. */
+N  u16_t rport;        /**< The remote port number in network byte order. */
+N  u8_t  ttl;          /**< Default time-to-live. */
+N
+N  /** The application state. */
+N  //uip_udp_appstate_t appstate;
+N};
+N
+N/**
+N * The current UDP connection.
+N */
+Nextern struct uip_udp_conn *uip_udp_conn;
+Nextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+Xextern struct uip_udp_conn uip_udp_conns[10];
 N#endif /* UIP_UDP */
 N
 N/**
@@ -4131,14 +4148,14 @@ N    uip_stats_t synrst;   /**< Number of SYNs for closed ports,
 N			     triggering a RST. */
 N  } tcp;                  /**< TCP statistics. */
 N#if UIP_UDP
-X#if 0
-S  struct {
-S    uip_stats_t drop;     /**< Number of dropped UDP segments. */
-S    uip_stats_t recv;     /**< Number of recived UDP segments. */
-S    uip_stats_t sent;     /**< Number of sent UDP segments. */
-S    uip_stats_t chkerr;   /**< Number of UDP segments with a bad
-S			     checksum. */
-S  } udp;                  /**< UDP statistics. */
+X#if 1
+N  struct {
+N    uip_stats_t drop;     /**< Number of dropped UDP segments. */
+N    uip_stats_t recv;     /**< Number of recived UDP segments. */
+N    uip_stats_t sent;     /**< Number of sent UDP segments. */
+N    uip_stats_t chkerr;   /**< Number of UDP segments with a bad
+N			     checksum. */
+N  } udp;                  /**< UDP statistics. */
 N#endif /* UIP_UDP */
 N};
 N
@@ -4224,8 +4241,8 @@ N#define UIP_UDP_SEND_CONN 4     /* Tells uIP that a UDP datagram
 N				   should be constructed in the
 N				   uip_buf buffer. */
 N#if UIP_UDP
-X#if 0
-S#define UIP_UDP_TIMER     5
+X#if 1
+N#define UIP_UDP_TIMER     5
 N#endif /* UIP_UDP */
 N
 N/* The TCP states used in the uip_conn->tcpstateflags. */

@@ -114,27 +114,7 @@ void tcp_client_senddata(void)
 
 
 
-void udp_app_call(void)
-{	 
-	if (uip_udp_conn->lport == (HTONS(8088)))//服务器模式
-	{
-		if (uip_newdata())
-		{			 
-			//udp_newdata();
-		}
-	}
-	
-	 
 
-	if(uip_udp_conn->rport == (HTONS(8089)))
-	{
-		
-	}
-
-
-	
-
-}
 
 
 

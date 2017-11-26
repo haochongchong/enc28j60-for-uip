@@ -175,9 +175,11 @@ extern uint8_t tapdev_init(void);
 static uip_ipaddr_t ipaddr;
 static void uip_polling(void);	
 uint16_t tcnt;
+struct uip_udp_conn *UIP_udp_conn;
 
 int main(void)
 {
+	uint8_t i;
 	u8 tcp_server_tsta=0XFF;
 	u8 tcp_client_tsta=0XFF;
 	
@@ -218,23 +220,96 @@ int main(void)
 	uip_setnetmask(ipaddr);
 
 	//uip_listen(HTONS(1200));			//监听1200端口,用于TCP Server
-	//uip_listen(HTONS(80));				//监听80端口,用于Web Server
+	//uip_listen(HTONS(80));				//监听80 端口,用于Web Server
   	//tcp_client_reconnect();	   		    //尝试连接到TCP Server端,用于TCP Client
 	
-//------------------------------------------------------------------------------------------------
-	uip_ipaddr(ipaddr, 192,168,1,16);	//设置本地设置IP地址
-	uip_udp_new(&ipaddr, HTONS(12345));
+//================================================================================================
+
+//1. 首先初始化所有的UDP链接
+	for( i = 0; i< UIP_UDP_CONNS; i++)
+	{
+		if(&uip_udp_conns[i] != NULL)
+		{
+			uip_udp_remove(&uip_udp_conns[i]);
+		}
+	}
 	
-//------------------------------------------------------------------------------------------------
 	
-	
+//2. 新建一个链接,为这个链接指定远程IP和远程端口         远程端口：8087   远程IP：192.168.1.17
+	uip_ipaddr(ipaddr, 192,168,1,17);
+	UIP_udp_conn = uip_udp_new(&ipaddr, HTONS(8087));
+//3. 将生成的链接绑定的一个指定的本地端口上              本地端口：8081
+	if(UIP_udp_conn != NULL) {
+		uip_udp_bind(UIP_udp_conn, HTONS(8081));
+	}
+//================================================================================================	
 	while (1)
 	{
 		uip_polling();	//处理uip事件，必须插入到用户程序的循环体中  
 	}
+//		if(tcp_server_tsta!=tcp_server_sta)//TCP Server状态改变
+//		{															 
+//			if(tcp_server_sta&(1<<7))
+//			{
+//				printf("TCP Server Connected   ");
+//			}
+//			else
+//			{
+//				printf("TCP Server Disconnected");
+//			}
+// 			if(tcp_server_sta&(1<<6))	//收到新数据
+//			{
+//    			printf("TCP Server RX:%s\r\n",tcp_server_databuf);//打印数据
+//				tcp_server_sta&=~(1<<6);		//标记数据已经被处理	
+//			}
+//			tcp_server_tsta=tcp_server_sta;
+//		}
+//		if(1)//TCP Server 请求发送数据
+//		{
+//			if(tcp_server_sta&(1<<7))	//连接还存在
+//			{
+//				sprintf((char*)tcp_server_databuf,"TCP Server OK %d\r\n",tcnt);	 
+//				tcp_server_sta|=1<<5;//标记有数据需要发送
+//				tcnt++;
+//			}
+//		}
+//		if(tcp_client_tsta!=tcp_client_sta)//TCP Client状态改变
+//		{															 
+//			if(tcp_client_sta&(1<<7))
+//			{
+//				printf("TCP Client Connected   ");
+//			}
+//			else
+//			{
+//				printf("TCP Client Disconnected");
+//			}
+// 			if(tcp_client_sta&(1<<6))	//收到新数据
+//			{
+//    			printf("TCP Client RX:%s\r\n",tcp_client_databuf);//打印数据
+//				tcp_client_sta&=~(1<<6);		//标记数据已经被处理	
+//			}
+//			tcp_client_tsta=tcp_client_sta;
+//		}
+//		if(0)//TCP Client 请求发送数据
+//		{
+//			if(tcp_client_sta&(1<<7))	//连接还存在
+//			{
+//				sprintf((char*)tcp_client_databuf,"TCP Client OK %d\r\n",tcnt);	 
+//				tcp_client_sta|=1<<5;//标记有数据需要发送
+//				tcnt++;
+//			}
+//		}
+//	} 
+//	
+	//lwip_demo(NULL);	  //初始化内核，启动LwIP相关
+
+	while (1)
+	{
+	    //exit(0);	
+	}
 }
 
-#define BUF ((struct uip_eth_hdr *)&uip_buf[0])	 
+#define HBUF ((struct uip_eth_hdr *)&uip_buf[0])	 
 void uip_polling(void)
 {
 	u8 i;
@@ -250,10 +325,11 @@ void uip_polling(void)
 	if(uip_len>0) 			//有数据
 	{   
 		//处理IP数据包(只有校验通过的IP包才会被接收) 
-		if(BUF->type == htons(UIP_ETHTYPE_IP))//是否是IP包? 
+		if(HBUF->type == htons(UIP_ETHTYPE_IP))//是否是IP包? 
 		{
 			uip_arp_ipin();	//去除以太网头结构，更新ARP表
 			uip_input();   	//IP包处理
+			//uip_process(UIP_UDP_TIMER);
 			//当上面的函数执行后，如果需要发送数据，则全局变量 uip_len > 0
 			//需要发送的数据在uip_buf, 长度是uip_len  (这是2个全局变量)		    
 			if(uip_len>0)//需要回应数据
@@ -261,12 +337,15 @@ void uip_polling(void)
 				uip_arp_out();//加以太网头结构，在主动连接时可能要构造ARP请求
 				tapdev_send();//发送数据到以太网
 			}
-		}else if (BUF->type==htons(UIP_ETHTYPE_ARP))//处理arp报文,是否是ARP请求包?
+		}else if (HBUF->type==htons(UIP_ETHTYPE_ARP))//处理arp报文,是否是ARP请求包?
 		{
 			uip_arp_arpin();
  			//当上面的函数执行后，如果需要发送数据，则全局变量uip_len>0
 			//需要发送的数据在uip_buf, 长度是uip_len(这是2个全局变量)
- 			if(uip_len>0)tapdev_send();//需要发送数据,则通过tapdev_send发送	 
+ 			if(uip_len>0)
+			{
+				tapdev_send();//需要发送数据,则通过tapdev_send发送	 
+			}
 		}
 	}else if(timer_expired(&periodic_timer))	//0.5秒定时器超时
 	{

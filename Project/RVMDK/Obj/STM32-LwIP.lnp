@@ -59,6 +59,7 @@
 ".\obj\httpd-cgi.o"
 ".\obj\httpd-fs.o"
 ".\obj\http-strings.o"
+".\obj\udp_demo.o"
 --library_type=microlib --strict --scatter ".\Obj\STM32-LwIP.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

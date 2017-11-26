@@ -23276,7 +23276,7 @@ N//ÈÕÖ¾¿ª¹Ø
 N#define UIP_CONF_LOGGING         1
 N
 N//UDPÖ§³Ö¿ª¹Ø
-N#define UIP_CONF_UDP             0
+N#define UIP_CONF_UDP             1
 N
 N//UDPĞ£ÑéºÍ¿ª¹Ø
 N#define UIP_CONF_UDP_CHECKSUMS   1	    
@@ -23774,7 +23774,15 @@ S#endif /* UIP_CONF_BYTE_ORDER */
 S
 S/** @} */
 S/*------------------------------------------------------------------------------*/
+Svoid udp_demo_appcall(void);
 S
+S
+S
+S
+S//¶¨ÒåÓ¦ÓÃ³ÌĞò»Øµ÷º¯Êı 
+S#ifndef UIP_UDP_APPCALL
+S#define UIP_UDP_APPCALL udp_demo_appcall //¶¨Òå»Øµ÷º¯ÊıÎª tcp_demo_appcall 
+S#endif
 S/**
 S * \name Appication specific configurations
 S * @{
@@ -25287,7 +25295,15 @@ N#endif /* UIP_CONF_BYTE_ORDER */
 N
 N/** @} */
 N/*------------------------------------------------------------------------------*/
+Nvoid udp_demo_appcall(void);
 N
+N
+N
+N
+N//¶¨ÒåÓ¦ÓÃ³ÌĞò»Øµ÷º¯Êı 
+N#ifndef UIP_UDP_APPCALL
+N#define UIP_UDP_APPCALL udp_demo_appcall //¶¨Òå»Øµ÷º¯ÊıÎª tcp_demo_appcall 
+N#endif
 N/**
 N * \name Appication specific configurations
 N * @{
@@ -25636,61 +25652,61 @@ X#define uip_poll_conn(conn) do { uip_conn = conn;                              
 N
 N
 N#if UIP_UDP
-X#if 0
-S/**
-S * Periodic processing for a UDP connection identified by its number.
-S *
-S * This function is essentially the same as uip_periodic(), but for
-S * UDP connections. It is called in a similar fashion as the
-S * uip_periodic() function:
-S \code
-S  for(i = 0; i < UIP_UDP_CONNS; i++) {
-S    uip_udp_periodic(i);
-S    if(uip_len > 0) {
-S      devicedriver_send();
-S    }
-S  }
-S \endcode
-S *
-S * \note As for the uip_periodic() function, special care has to be
-S * taken when using uIP together with ARP and Ethernet:
-S \code
-S  for(i = 0; i < UIP_UDP_CONNS; i++) {
-S    uip_udp_periodic(i);
-S    if(uip_len > 0) {
-S      uip_arp_out();
-S      ethernet_devicedriver_send();
-S    }
-S  }
-S \endcode
-S *
-S * \param conn The number of the UDP connection to be processed.
-S *
-S * \hideinitializer
-S */
-S#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn]; \
-S                                uip_process(UIP_UDP_TIMER); } while (0)
+X#if 1
+N/**
+N * Periodic processing for a UDP connection identified by its number.
+N *
+N * This function is essentially the same as uip_periodic(), but for
+N * UDP connections. It is called in a similar fashion as the
+N * uip_periodic() function:
+N \code
+N  for(i = 0; i < UIP_UDP_CONNS; i++) {
+N    uip_udp_periodic(i);
+N    if(uip_len > 0) {
+N      devicedriver_send();
+N    }
+N  }
+N \endcode
+N *
+N * \note As for the uip_periodic() function, special care has to be
+N * taken when using uIP together with ARP and Ethernet:
+N \code
+N  for(i = 0; i < UIP_UDP_CONNS; i++) {
+N    uip_udp_periodic(i);
+N    if(uip_len > 0) {
+N      uip_arp_out();
+N      ethernet_devicedriver_send();
+N    }
+N  }
+N \endcode
+N *
+N * \param conn The number of the UDP connection to be processed.
+N *
+N * \hideinitializer
+N */
+N#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn]; \
+N                                uip_process(UIP_UDP_TIMER); } while (0)
 X#define uip_udp_periodic(conn) do { uip_udp_conn = &uip_udp_conns[conn];                                 uip_process(UIP_UDP_TIMER); } while (0)
-S
-S/**
-S * Periodic processing for a UDP connection identified by a pointer to
-S * its structure.
-S *
-S * Same as uip_udp_periodic() but takes a pointer to the actual
-S * uip_conn struct instead of an integer as its argument. This
-S * function can be used to force periodic processing of a specific
-S * connection.
-S *
-S * \param conn A pointer to the uip_udp_conn struct for the connection
-S * to be processed.
-S *
-S * \hideinitializer
-S */
-S#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn; \
-S                                         uip_process(UIP_UDP_TIMER); } while (0)
+N
+N/**
+N * Periodic processing for a UDP connection identified by a pointer to
+N * its structure.
+N *
+N * Same as uip_udp_periodic() but takes a pointer to the actual
+N * uip_conn struct instead of an integer as its argument. This
+N * function can be used to force periodic processing of a specific
+N * connection.
+N *
+N * \param conn A pointer to the uip_udp_conn struct for the connection
+N * to be processed.
+N *
+N * \hideinitializer
+N */
+N#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn; \
+N                                         uip_process(UIP_UDP_TIMER); } while (0)
 X#define uip_udp_periodic_conn(conn) do { uip_udp_conn = conn;                                          uip_process(UIP_UDP_TIMER); } while (0)
-S
-S
+N
+N
 N#endif /* UIP_UDP */
 N
 N/**
@@ -26516,25 +26532,26 @@ N/** @} */
 N
 N
 N#if UIP_UDP
-X#if 0
-S/**
-S * Representation of a uIP UDP connection.
-S */
-Sstruct uip_udp_conn {
-S  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
-S  u16_t lport;        /**< The local port number in network byte order. */
-S  u16_t rport;        /**< The remote port number in network byte order. */
-S  u8_t  ttl;          /**< Default time-to-live. */
-S
-S  /** The application state. */
-S  uip_udp_appstate_t appstate;
-S};
-S
-S/**
-S * The current UDP connection.
-S */
-Sextern struct uip_udp_conn *uip_udp_conn;
-Sextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+X#if 1
+N/**
+N * Representation of a uIP UDP connection.
+N */
+Nstruct uip_udp_conn {
+N  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
+N  u16_t lport;        /**< The local port number in network byte order. */
+N  u16_t rport;        /**< The remote port number in network byte order. */
+N  u8_t  ttl;          /**< Default time-to-live. */
+N
+N  /** The application state. */
+N  //uip_udp_appstate_t appstate;
+N};
+N
+N/**
+N * The current UDP connection.
+N */
+Nextern struct uip_udp_conn *uip_udp_conn;
+Nextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+Xextern struct uip_udp_conn uip_udp_conns[10];
 N#endif /* UIP_UDP */
 N
 N/**
@@ -26586,14 +26603,14 @@ N    uip_stats_t synrst;   /**< Number of SYNs for closed ports,
 N			     triggering a RST. */
 N  } tcp;                  /**< TCP statistics. */
 N#if UIP_UDP
-X#if 0
-S  struct {
-S    uip_stats_t drop;     /**< Number of dropped UDP segments. */
-S    uip_stats_t recv;     /**< Number of recived UDP segments. */
-S    uip_stats_t sent;     /**< Number of sent UDP segments. */
-S    uip_stats_t chkerr;   /**< Number of UDP segments with a bad
-S			     checksum. */
-S  } udp;                  /**< UDP statistics. */
+X#if 1
+N  struct {
+N    uip_stats_t drop;     /**< Number of dropped UDP segments. */
+N    uip_stats_t recv;     /**< Number of recived UDP segments. */
+N    uip_stats_t sent;     /**< Number of sent UDP segments. */
+N    uip_stats_t chkerr;   /**< Number of UDP segments with a bad
+N			     checksum. */
+N  } udp;                  /**< UDP statistics. */
 N#endif /* UIP_UDP */
 N};
 N
@@ -26679,8 +26696,8 @@ N#define UIP_UDP_SEND_CONN 4     /* Tells uIP that a UDP datagram
 N				   should be constructed in the
 N				   uip_buf buffer. */
 N#if UIP_UDP
-X#if 0
-S#define UIP_UDP_TIMER     5
+X#if 1
+N#define UIP_UDP_TIMER     5
 N#endif /* UIP_UDP */
 N
 N/* The TCP states used in the uip_conn->tcpstateflags. */
@@ -27552,9 +27569,11 @@ Nextern uint8_t tapdev_init(void);
 Nstatic uip_ipaddr_t ipaddr;
 Nstatic void uip_polling(void);	
 Nuint16_t tcnt;
+Nstruct uip_udp_conn *UIP_udp_conn;
 N
 Nint main(void)
 N{
+N	uint8_t i;
 N	u8 tcp_server_tsta=0XFF;
 N	u8 tcp_client_tsta=0XFF;
 N	
@@ -27600,80 +27619,107 @@ X	do { ((u16_t *)(ipaddr))[0] = (u16_t)((((u16_t) (((255) << 8) | (255))) << 8) 
 N	uip_setnetmask(ipaddr);
 X	do { ((u16_t *)uip_netmask)[0] = ((u16_t *)(ipaddr))[0]; ((u16_t *)uip_netmask)[1] = ((u16_t *)(ipaddr))[1]; } while(0);
 N
-N	uip_listen(HTONS(1200));			//¼àÌı1200¶Ë¿Ú,ÓÃÓÚTCP Server
-X	uip_listen((u16_t)((((u16_t) (1200)) << 8) | (((u16_t) (1200)) >> 8)));			
-N	uip_listen(HTONS(80));				//¼àÌı80¶Ë¿Ú,ÓÃÓÚWeb Server
-X	uip_listen((u16_t)((((u16_t) (80)) << 8) | (((u16_t) (80)) >> 8)));				
-N  	tcp_client_reconnect();	   		    //³¢ÊÔÁ¬½Óµ½TCP Server¶Ë,ÓÃÓÚTCP Client
+N	//uip_listen(HTONS(1200));			//¼àÌı1200¶Ë¿Ú,ÓÃÓÚTCP Server
+N	//uip_listen(HTONS(80));				//¼àÌı80 ¶Ë¿Ú,ÓÃÓÚWeb Server
+N  	//tcp_client_reconnect();	   		    //³¢ÊÔÁ¬½Óµ½TCP Server¶Ë,ÓÃÓÚTCP Client
+N	
+N//================================================================================================
+N
+N//1. Ê×ÏÈ³õÊ¼»¯ËùÓĞµÄUDPÁ´½Ó
+N	for( i = 0; i< UIP_UDP_CONNS; i++)
+X	for( i = 0; i< 10; i++)
+N	{
+N		if(&uip_udp_conns[i] != NULL)
+X		if(&uip_udp_conns[i] != 0)
+N		{
+N			uip_udp_remove(&uip_udp_conns[i]);
+X			(&uip_udp_conns[i])->lport = 0;
+N		}
+N	}
 N	
 N	
+N//2. ĞÂ½¨Ò»¸öÁ´½Ó,ÎªÕâ¸öÁ´½ÓÖ¸¶¨Ô¶³ÌIPºÍÔ¶³Ì¶Ë¿Ú         Ô¶³Ì¶Ë¿Ú£º8087   Ô¶³ÌIP£º192.168.1.17
+N	uip_ipaddr(ipaddr, 192,168,1,17);
+X	do { ((u16_t *)(ipaddr))[0] = (u16_t)((((u16_t) (((192) << 8) | (168))) << 8) | (((u16_t) (((192) << 8) | (168))) >> 8)); ((u16_t *)(ipaddr))[1] = (u16_t)((((u16_t) (((1) << 8) | (17))) << 8) | (((u16_t) (((1) << 8) | (17))) >> 8)); } while(0);
+N	UIP_udp_conn = uip_udp_new(&ipaddr, HTONS(8087));
+X	UIP_udp_conn = uip_udp_new(&ipaddr, (u16_t)((((u16_t) (8087)) << 8) | (((u16_t) (8087)) >> 8)));
+N//3. ½«Éú³ÉµÄÁ´½Ó°ó¶¨µÄÒ»¸öÖ¸¶¨µÄ±¾µØ¶Ë¿ÚÉÏ              ±¾µØ¶Ë¿Ú£º8081
+N	if(UIP_udp_conn != NULL) {
+X	if(UIP_udp_conn != 0) {
+N		uip_udp_bind(UIP_udp_conn, HTONS(8081));
+X		(UIP_udp_conn)->lport = (u16_t)((((u16_t) (8081)) << 8) | (((u16_t) (8081)) >> 8));
+N	}
+N//================================================================================================	
 N	while (1)
 N	{
 N		uip_polling();	//´¦ÀíuipÊÂ¼ş£¬±ØĞë²åÈëµ½ÓÃ»§³ÌĞòµÄÑ­»·ÌåÖĞ  
-N		if(tcp_server_tsta!=tcp_server_sta)//TCP Server×´Ì¬¸Ä±ä
-N		{															 
-N			if(tcp_server_sta&(1<<7))
-N			{
-N				printf("TCP Server Connected   ");
-N			}
-N			else
-N			{
-N				printf("TCP Server Disconnected");
-N			}
-N 			if(tcp_server_sta&(1<<6))	//ÊÕµ½ĞÂÊı¾İ
-N			{
-N    			printf("TCP Server RX:%s\r\n",tcp_server_databuf);//´òÓ¡Êı¾İ
-N				tcp_server_sta&=~(1<<6);		//±ê¼ÇÊı¾İÒÑ¾­±»´¦Àí	
-N			}
-N			tcp_server_tsta=tcp_server_sta;
-N		}
-N		if(1)//TCP Server ÇëÇó·¢ËÍÊı¾İ
-N		{
-N			if(tcp_server_sta&(1<<7))	//Á¬½Ó»¹´æÔÚ
-N			{
-N				sprintf((char*)tcp_server_databuf,"TCP Server OK %d\r\n",tcnt);	 
-N				tcp_server_sta|=1<<5;//±ê¼ÇÓĞÊı¾İĞèÒª·¢ËÍ
-N				tcnt++;
-N			}
-N		}
-N		if(tcp_client_tsta!=tcp_client_sta)//TCP Client×´Ì¬¸Ä±ä
-N		{															 
-N			if(tcp_client_sta&(1<<7))
-N			{
-N				printf("TCP Client Connected   ");
-N			}
-N			else
-N			{
-N				printf("TCP Client Disconnected");
-N			}
-N 			if(tcp_client_sta&(1<<6))	//ÊÕµ½ĞÂÊı¾İ
-N			{
-N    			printf("TCP Client RX:%s\r\n",tcp_client_databuf);//´òÓ¡Êı¾İ
-N				tcp_client_sta&=~(1<<6);		//±ê¼ÇÊı¾İÒÑ¾­±»´¦Àí	
-N			}
-N			tcp_client_tsta=tcp_client_sta;
-N		}
-N		if(0)//TCP Client ÇëÇó·¢ËÍÊı¾İ
-N		{
-N			if(tcp_client_sta&(1<<7))	//Á¬½Ó»¹´æÔÚ
-N			{
-N				sprintf((char*)tcp_client_databuf,"TCP Client OK %d\r\n",tcnt);	 
-N				tcp_client_sta|=1<<5;//±ê¼ÇÓĞÊı¾İĞèÒª·¢ËÍ
-N				tcnt++;
-N			}
-N		}
-N	} 
-N	
+N	}
+N//		if(tcp_server_tsta!=tcp_server_sta)//TCP Server×´Ì¬¸Ä±ä
+N//		{															 
+N//			if(tcp_server_sta&(1<<7))
+N//			{
+N//				printf("TCP Server Connected   ");
+N//			}
+N//			else
+N//			{
+N//				printf("TCP Server Disconnected");
+N//			}
+N// 			if(tcp_server_sta&(1<<6))	//ÊÕµ½ĞÂÊı¾İ
+N//			{
+N//    			printf("TCP Server RX:%s\r\n",tcp_server_databuf);//´òÓ¡Êı¾İ
+N//				tcp_server_sta&=~(1<<6);		//±ê¼ÇÊı¾İÒÑ¾­±»´¦Àí	
+N//			}
+N//			tcp_server_tsta=tcp_server_sta;
+N//		}
+N//		if(1)//TCP Server ÇëÇó·¢ËÍÊı¾İ
+N//		{
+N//			if(tcp_server_sta&(1<<7))	//Á¬½Ó»¹´æÔÚ
+N//			{
+N//				sprintf((char*)tcp_server_databuf,"TCP Server OK %d\r\n",tcnt);	 
+N//				tcp_server_sta|=1<<5;//±ê¼ÇÓĞÊı¾İĞèÒª·¢ËÍ
+N//				tcnt++;
+N//			}
+N//		}
+N//		if(tcp_client_tsta!=tcp_client_sta)//TCP Client×´Ì¬¸Ä±ä
+N//		{															 
+N//			if(tcp_client_sta&(1<<7))
+N//			{
+N//				printf("TCP Client Connected   ");
+N//			}
+N//			else
+N//			{
+N//				printf("TCP Client Disconnected");
+N//			}
+N// 			if(tcp_client_sta&(1<<6))	//ÊÕµ½ĞÂÊı¾İ
+N//			{
+N//    			printf("TCP Client RX:%s\r\n",tcp_client_databuf);//´òÓ¡Êı¾İ
+N//				tcp_client_sta&=~(1<<6);		//±ê¼ÇÊı¾İÒÑ¾­±»´¦Àí	
+N//			}
+N//			tcp_client_tsta=tcp_client_sta;
+N//		}
+N//		if(0)//TCP Client ÇëÇó·¢ËÍÊı¾İ
+N//		{
+N//			if(tcp_client_sta&(1<<7))	//Á¬½Ó»¹´æÔÚ
+N//			{
+N//				sprintf((char*)tcp_client_databuf,"TCP Client OK %d\r\n",tcnt);	 
+N//				tcp_client_sta|=1<<5;//±ê¼ÇÓĞÊı¾İĞèÒª·¢ËÍ
+N//				tcnt++;
+N//			}
+N//		}
+N//	} 
+N//	
 N	//lwip_demo(NULL);	  //³õÊ¼»¯ÄÚºË£¬Æô¶¯LwIPÏà¹Ø
 N
 N	while (1)
 N	{
 N	    //exit(0);	
 N	}
-W "..\..\Source\src\main.c" 284 2 loop is not reachable
+W "..\..\Source\src\main.c" 306 2 loop is not reachable
+W "..\..\Source\src\main.c" 183 5 variable "tcp_server_tsta" was declared but never referenced
+W "..\..\Source\src\main.c" 184 5 variable "tcp_client_tsta" was declared but never referenced
 N}
 N
-N#define BUF ((struct uip_eth_hdr *)&uip_buf[0])	 
+N#define HBUF ((struct uip_eth_hdr *)&uip_buf[0])	 
 Nvoid uip_polling(void)
 N{
 N	u8 i;
@@ -27691,13 +27737,14 @@ N	uip_len=tapdev_read();	//´ÓÍøÂçÉè±¸¶ÁÈ¡Ò»¸öIP°ü,µÃµ½Êı¾İ³¤¶È.uip_lenÔÚuip.cÖĞ¶
 N	if(uip_len>0) 			//ÓĞÊı¾İ
 N	{   
 N		//´¦ÀíIPÊı¾İ°ü(Ö»ÓĞĞ£ÑéÍ¨¹ıµÄIP°ü²Å»á±»½ÓÊÕ) 
-N		if(BUF->type == htons(UIP_ETHTYPE_IP))//ÊÇ·ñÊÇIP°ü? 
+N		if(HBUF->type == htons(UIP_ETHTYPE_IP))//ÊÇ·ñÊÇIP°ü? 
 X		if(((struct uip_eth_hdr *)&uip_buf[0])->type == htons(0x0800))
 N		{
 N			uip_arp_ipin();	//È¥³ıÒÔÌ«ÍøÍ·½á¹¹£¬¸üĞÂARP±í
 X			;	
 N			uip_input();   	//IP°ü´¦Àí
 X			uip_process(1);   	
+N			//uip_process(UIP_UDP_TIMER);
 N			//µ±ÉÏÃæµÄº¯ÊıÖ´ĞĞºó£¬Èç¹ûĞèÒª·¢ËÍÊı¾İ£¬ÔòÈ«¾Ö±äÁ¿ uip_len > 0
 N			//ĞèÒª·¢ËÍµÄÊı¾İÔÚuip_buf, ³¤¶ÈÊÇuip_len  (ÕâÊÇ2¸öÈ«¾Ö±äÁ¿)		    
 N			if(uip_len>0)//ĞèÒª»ØÓ¦Êı¾İ
@@ -27705,13 +27752,16 @@ N			{
 N				uip_arp_out();//¼ÓÒÔÌ«ÍøÍ·½á¹¹£¬ÔÚÖ÷¶¯Á¬½ÓÊ±¿ÉÄÜÒª¹¹ÔìARPÇëÇó
 N				tapdev_send();//·¢ËÍÊı¾İµ½ÒÔÌ«Íø
 N			}
-N		}else if (BUF->type==htons(UIP_ETHTYPE_ARP))//´¦Àíarp±¨ÎÄ,ÊÇ·ñÊÇARPÇëÇó°ü?
+N		}else if (HBUF->type==htons(UIP_ETHTYPE_ARP))//´¦Àíarp±¨ÎÄ,ÊÇ·ñÊÇARPÇëÇó°ü?
 X		}else if (((struct uip_eth_hdr *)&uip_buf[0])->type==htons(0x0806))
 N		{
 N			uip_arp_arpin();
 N 			//µ±ÉÏÃæµÄº¯ÊıÖ´ĞĞºó£¬Èç¹ûĞèÒª·¢ËÍÊı¾İ£¬ÔòÈ«¾Ö±äÁ¿uip_len>0
 N			//ĞèÒª·¢ËÍµÄÊı¾İÔÚuip_buf, ³¤¶ÈÊÇuip_len(ÕâÊÇ2¸öÈ«¾Ö±äÁ¿)
-N 			if(uip_len>0)tapdev_send();//ĞèÒª·¢ËÍÊı¾İ,ÔòÍ¨¹ıtapdev_send·¢ËÍ	 
+N 			if(uip_len>0)
+N			{
+N				tapdev_send();//ĞèÒª·¢ËÍÊı¾İ,ÔòÍ¨¹ıtapdev_send·¢ËÍ	 
+N			}
 N		}
 N	}else if(timer_expired(&periodic_timer))	//0.5Ãë¶¨Ê±Æ÷³¬Ê±
 N	{
@@ -27731,19 +27781,21 @@ N				tapdev_send();//·¢ËÍÊı¾İµ½ÒÔÌ«Íø
 N			}
 N		}
 N#if UIP_UDP	//UIP_UDP 
-X#if 0	
-S		//ÂÖÁ÷´¦ÀíÃ¿¸öUDPÁ¬½Ó, UIP_UDP_CONNSÈ±Ê¡ÊÇ10¸ö
-S		for(i=0;i<UIP_UDP_CONNS;i++)
-S		{
-S			uip_udp_periodic(i);	//´¦ÀíUDPÍ¨ĞÅÊÂ¼ş
-S	 		//µ±ÉÏÃæµÄº¯ÊıÖ´ĞĞºó£¬Èç¹ûĞèÒª·¢ËÍÊı¾İ£¬ÔòÈ«¾Ö±äÁ¿uip_len>0
-S			//ĞèÒª·¢ËÍµÄÊı¾İÔÚuip_buf, ³¤¶ÈÊÇuip_len (ÕâÊÇ2¸öÈ«¾Ö±äÁ¿)
-S			if(uip_len > 0)
-S			{
-S				uip_arp_out();//¼ÓÒÔÌ«ÍøÍ·½á¹¹£¬ÔÚÖ÷¶¯Á¬½ÓÊ±¿ÉÄÜÒª¹¹ÔìARPÇëÇó
-S				tapdev_send();//·¢ËÍÊı¾İµ½ÒÔÌ«Íø
-S			}
-S		}
+X#if 1	
+N		//ÂÖÁ÷´¦ÀíÃ¿¸öUDPÁ¬½Ó, UIP_UDP_CONNSÈ±Ê¡ÊÇ10¸ö
+N		for(i=0;i<UIP_UDP_CONNS;i++)
+X		for(i=0;i<10;i++)
+N		{
+N			uip_udp_periodic(i);	//´¦ÀíUDPÍ¨ĞÅÊÂ¼ş
+X			do { uip_udp_conn = &uip_udp_conns[i]; uip_process(5); } while (0);	
+N	 		//µ±ÉÏÃæµÄº¯ÊıÖ´ĞĞºó£¬Èç¹ûĞèÒª·¢ËÍÊı¾İ£¬ÔòÈ«¾Ö±äÁ¿uip_len>0
+N			//ĞèÒª·¢ËÍµÄÊı¾İÔÚuip_buf, ³¤¶ÈÊÇuip_len (ÕâÊÇ2¸öÈ«¾Ö±äÁ¿)
+N			if(uip_len > 0)
+N			{
+N				uip_arp_out();//¼ÓÒÔÌ«ÍøÍ·½á¹¹£¬ÔÚÖ÷¶¯Á¬½ÓÊ±¿ÉÄÜÒª¹¹ÔìARPÇëÇó
+N				tapdev_send();//·¢ËÍÊı¾İµ½ÒÔÌ«Íø
+N			}
+N		}
 N#endif 
 N		//Ã¿¸ô10Ãëµ÷ÓÃ1´ÎARP¶¨Ê±Æ÷º¯Êı ÓÃÓÚ¶¨ÆÚARP´¦Àí,ARP±í10Ãë¸üĞÂÒ»´Î£¬¾ÉµÄÌõÄ¿»á±»Å×Æú
 N		if(timer_expired(&arp_timer))

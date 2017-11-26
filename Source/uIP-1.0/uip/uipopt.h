@@ -477,7 +477,15 @@ void uip_log(char *msg);
 
 /** @} */
 /*------------------------------------------------------------------------------*/
+void udp_demo_appcall(void);
 
+
+
+
+//定义应用程序回调函数 
+#ifndef UIP_UDP_APPCALL
+#define UIP_UDP_APPCALL udp_demo_appcall //定义回调函数为 tcp_demo_appcall 
+#endif
 /**
  * \name Appication specific configurations
  * @{

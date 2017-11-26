@@ -29,22 +29,10 @@ void tcp_demo_appcall(void);
 void tcp_client_demo_appcall(void);
 void tcp_server_demo_appcall(void);
 
-
-void udp_app_call(void);
-
-
-
 //定义应用程序回调函数 
 #ifndef UIP_APPCALL
 #define UIP_APPCALL tcp_demo_appcall //定义回调函数为 tcp_demo_appcall 
 #endif
-
-#ifndef UIP_UDP_APPCALL
-#define UIP_UDP_APPCALL udp_app_call //定义回调函数为 tcp_demo_appcall 
-#endif
-
-
-
 /////////////////////////////////////TCP SERVER/////////////////////////////////////
 extern uint8_t tcp_server_databuf[];   		//发送数据缓存	 
 extern uint8_t tcp_server_sta;				//服务端状态   
