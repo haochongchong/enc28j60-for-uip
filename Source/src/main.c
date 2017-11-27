@@ -366,7 +366,12 @@ void uip_polling(void)
 		//轮流处理每个UDP连接, UIP_UDP_CONNS缺省是10个
 		for(i=0;i<UIP_UDP_CONNS;i++)
 		{
-			uip_udp_periodic(i);	//处理UDP通信事件
+			//uip_udp_periodic(i);	//处理UDP通信事件
+            do 
+            { 
+                uip_udp_conn = &uip_udp_conns[i]; 
+                uip_process(UIP_UDP_TIMER); 
+            } while (0);
 	 		//当上面的函数执行后，如果需要发送数据，则全局变量uip_len>0
 			//需要发送的数据在uip_buf, 长度是uip_len (这是2个全局变量)
 			if(uip_len > 0)

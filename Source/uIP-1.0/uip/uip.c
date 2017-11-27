@@ -1843,16 +1843,24 @@ uip_process(u8_t flag)
   /* Calculate TCP checksum. */
   BUF->tcpchksum = 0;
   BUF->tcpchksum = ~(uip_tcpchksum());
-  
+//==================================================================================
+
+// IP 发射：  这里进入了IP 发射层
 #if UIP_UDP
  ip_send_nolen:
 #endif
 
-#if UIP_CONF_IPV6
-  BUF->vtc = 0x60;
-  BUF->tcflow = 0x00;
-  BUF->flow = 0x00;
-#else /* UIP_CONF_IPV6 */
+//1. 到达这里的都是UDP 和 TCP 数据，要在这里进行IP层的封装
+
+//#if UIP_CONF_IPV6
+//  BUF->vtc = 0x60;
+//  BUF->tcflow = 0x00;
+//  BUF->flow = 0x00;
+//#else /* UIP_CONF_IPV6 */
+
+        //此处暂时注释掉IPV6的代码
+    
+  //对IP首部的各个字段的值进行赋值
   BUF->vhl = 0x45;
   BUF->tos = 0;
   BUF->ipoffset[0] = BUF->ipoffset[1] = 0;
@@ -1863,9 +1871,10 @@ uip_process(u8_t flag)
   BUF->ipchksum = 0;
   BUF->ipchksum = ~(uip_ipchksum());
   DEBUG_PRINTF("uip ip_send_nolen: chkecum 0x%04x\n", uip_ipchksum());
-#endif /* UIP_CONF_IPV6 */
+//#endif /* UIP_CONF_IPV6 */
    
   UIP_STAT(++uip_stat.tcp.sent);
+//2.凡是到达这里的  封装完毕，进行发送。但是此处并没有硬件发送，而是这个函数返回后立刻调用 ARP 函数添加以太网帧头
  send:
   DEBUG_PRINTF("Sending packet with length %d (%d)\n", uip_len,
 	       (BUF->len[0] << 8) | BUF->len[1]);
@@ -1874,6 +1883,7 @@ uip_process(u8_t flag)
   /* Return and let the caller do the actual transmission. */
   uip_flags = 0;
   return;
+//==================================================================================
  drop:
   uip_len = 0;
   uip_flags = 0;
