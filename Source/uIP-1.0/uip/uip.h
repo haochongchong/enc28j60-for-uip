@@ -763,7 +763,7 @@ void uip_send(const void *data, int len);
  * \return The uip_udp_conn structure for the new connection or NULL
  * if no connection could be allocated.
  */
-struct uip_udp_conn *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
+struct uip_udp_conn_constr *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
 
 /**
  * Removed a UDP connection.
@@ -1207,7 +1207,7 @@ extern u8_t uip_acc32[4];
 /**
  * Representation of a uIP UDP connection.
  */
-struct uip_udp_conn {
+struct uip_udp_conn_constr {
   uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
   u16_t lport;        /**< The local port number in network byte order. */
   u16_t rport;        /**< The remote port number in network byte order. */
@@ -1220,8 +1220,8 @@ struct uip_udp_conn {
 /**
  * The current UDP connection.
  */
-extern struct uip_udp_conn *uip_udp_conn;
-extern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+extern struct uip_udp_conn_constr *uip_udp_conn;
+extern struct uip_udp_conn_constr uip_udp_conns[UIP_UDP_CONNS];
 #endif /* UIP_UDP */
 
 /**

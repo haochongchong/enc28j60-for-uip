@@ -175,7 +175,7 @@ extern uint8_t tapdev_init(void);
 static uip_ipaddr_t ipaddr;
 static void uip_polling(void);	
 uint16_t tcnt;
-struct uip_udp_conn *UIP_udp_conn;
+struct uip_udp_conn_constr *UIP_udp_conn;
 
 int main(void)
 {

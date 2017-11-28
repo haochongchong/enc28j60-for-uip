@@ -171,8 +171,8 @@ u16_t uip_listenports[UIP_LISTENPORTS];
                              /* The uip_listenports list all currently
 				listning ports. */
 #if UIP_UDP
-struct uip_udp_conn *uip_udp_conn;
-struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
+struct uip_udp_conn_constr *uip_udp_conn;
+struct uip_udp_conn_constr uip_udp_conns[UIP_UDP_CONNS];
 #endif /* UIP_UDP */
 
 static u16_t ipid;           /* Ths ipid variable is an increasing
@@ -470,10 +470,10 @@ uip_connect(uip_ipaddr_t *ripaddr, u16_t rport)
 #endif /* UIP_ACTIVE_OPEN */
 /*---------------------------------------------------------------------------*/
 #if UIP_UDP
-struct uip_udp_conn *
+struct uip_udp_conn_constr *
 uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport)
 {
-  register struct uip_udp_conn *conn;
+  register struct uip_udp_conn_constr *conn;
   
   /* Find an unused local port. */
  again:
