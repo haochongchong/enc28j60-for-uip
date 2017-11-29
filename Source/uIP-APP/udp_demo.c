@@ -26,11 +26,10 @@ void udp_reback_appcall(void)
     static uint16_t app_to_udp_buflen=0;
     static uint8_t app_to_udp_buf[64];
     
-    if(uip_newdata())
-    {
-		//当接收到数据时，数据存放在  uip_appdata 中，长度为  uip_len
-        process_appdata(uip_appdata, uip_len);
-    }
+
+	//当接收到数据时，数据存放在  uip_appdata 中，长度为  uip_len
+	process_appdata(uip_appdata, uip_len);
+
 //    if(uip_poll())
 //    {
 //        if(app_to_udp_buflen)
@@ -43,22 +42,27 @@ void udp_reback_appcall(void)
 
 void udp_demo_appcall(void)
 {
-    switch(uip_udp_conn->lport)//本地端口
+	if(uip_newdata())
+    {
+		switch(uip_udp_conn->lport)//本地端口
+		{
+			case HTONS(8081):
+				udp_reback_appcall();
+				break;
+			default:						  
+				break;
+		}
+	}else if(uip_poll())
 	{
-		case HTONS(8081):
-			udp_reback_appcall();
-			break;
-		default:						  
-		    break;
-	}		    
-	switch(uip_udp_conn->rport)//远程连接
-	{
-	    case HTONS(8087):
-            
-            break;
-	    default: 
-            break;
-	}   
+		switch(uip_udp_conn->rport)//远程连接
+		{
+			case HTONS(8087):
+				
+				break;
+			default: 
+				break;
+		}  
+	}		
 }
 
 
