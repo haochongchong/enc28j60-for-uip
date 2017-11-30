@@ -223,6 +223,9 @@ int main(void)
 	//uip_listen(HTONS(80));				//监听80 端口,用于Web Server
   	//tcp_client_reconnect();	   		    //尝试连接到TCP Server端,用于TCP Client
 	
+    
+    
+    
 //================================================================================================
 
 //1. 首先初始化所有的UDP链接
@@ -241,6 +244,11 @@ int main(void)
 //3. 将生成的链接绑定的一个指定的本地端口上              本地端口：8081
 	if(UIP_udp_conn != NULL) {
 		uip_udp_bind(UIP_udp_conn, HTONS(8081));
+	}
+    UIP_udp_conn = uip_udp_new(&ipaddr, HTONS(8087));
+//3. 将生成的链接绑定的一个指定的本地端口上              本地端口：8082
+	if(UIP_udp_conn != NULL) {
+		uip_udp_bind(UIP_udp_conn, HTONS(8082));
 	}
 //================================================================================================	
 	while (1)
