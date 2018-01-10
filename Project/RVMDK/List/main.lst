@@ -575,7 +575,7 @@ N
 N#define __CORTEX_M                (0x03)                                                       /*!< Cortex core                    */
 N
 N#include <stdint.h>                           /* Include standard types */
-L 1 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h" 1
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h" 1
 N/* Copyright (C) ARM Ltd., 1999,2014 */
 N/* All rights reserved */
 N
@@ -21517,7 +21517,7 @@ N
 N/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
 L 5 "..\..\Source\src\main.c" 2
 N#include <stdio.h>	 
-L 1 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h" 1
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h" 1
 N/* stdio.h: ANSI 'C' (X3J11 Oct 88) library header, section 4.9 */
 N/* Copyright (C) Codemist Ltd., 1988-1993                       */
 N/* Copyright 1991-1998 ARM Limited. All rights reserved.        */
@@ -22630,7 +22630,7 @@ N/* end of stdio.h */
 N
 L 6 "..\..\Source\src\main.c" 2
 N#include  <stdarg.h>
-L 1 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h" 1
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\stdarg.h" 1
 N/* stdarg.h: ANSI 'C' (X3J11 Oct 88) library header, section 4.8 */
 N/* Copyright (C) Codemist Ltd., 1988                            */
 N/* Copyright (C) ARM Ltd., 1991-1999. All rights reserved */
@@ -22973,7 +22973,7 @@ N
 N#ifndef __UIP_CONF_H__
 N#define __UIP_CONF_H__
 N#include <inttypes.h>	   
-L 1 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h" 1
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\inttypes.h" 1
 N/* Copyright (C) ARM Ltd., 1999,2014 */
 N/* All rights reserved */
 N
@@ -26081,7 +26081,7 @@ N *
 N * \return The uip_udp_conn structure for the new connection or NULL
 N * if no connection could be allocated.
 N */
-Nstruct uip_udp_conn *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
+Nstruct uip_udp_conn_constr *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
 N
 N/**
 N * Removed a UDP connection.
@@ -26536,7 +26536,7 @@ X#if 1
 N/**
 N * Representation of a uIP UDP connection.
 N */
-Nstruct uip_udp_conn {
+Nstruct uip_udp_conn_constr {
 N  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
 N  u16_t lport;        /**< The local port number in network byte order. */
 N  u16_t rport;        /**< The remote port number in network byte order. */
@@ -26549,9 +26549,9 @@ N
 N/**
 N * The current UDP connection.
 N */
-Nextern struct uip_udp_conn *uip_udp_conn;
-Nextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
-Xextern struct uip_udp_conn uip_udp_conns[10];
+Nextern struct uip_udp_conn_constr *uip_udp_conn;
+Nextern struct uip_udp_conn_constr uip_udp_conns[UIP_UDP_CONNS];
+Xextern struct uip_udp_conn_constr uip_udp_conns[10];
 N#endif /* UIP_UDP */
 N
 N/**
@@ -27569,7 +27569,7 @@ Nextern uint8_t tapdev_init(void);
 Nstatic uip_ipaddr_t ipaddr;
 Nstatic void uip_polling(void);	
 Nuint16_t tcnt;
-Nstruct uip_udp_conn *UIP_udp_conn;
+Nstruct uip_udp_conn_constr *UIP_udp_conn;
 N
 Nint main(void)
 N{
@@ -27623,6 +27623,9 @@ N	//uip_listen(HTONS(1200));			//监听1200端口,用于TCP Server
 N	//uip_listen(HTONS(80));				//监听80 端口,用于Web Server
 N  	//tcp_client_reconnect();	   		    //尝试连接到TCP Server端,用于TCP Client
 N	
+N    
+N    
+N    
 N//================================================================================================
 N
 N//1. 首先初始化所有的UDP链接
@@ -27648,6 +27651,14 @@ N	if(UIP_udp_conn != NULL) {
 X	if(UIP_udp_conn != 0) {
 N		uip_udp_bind(UIP_udp_conn, HTONS(8081));
 X		(UIP_udp_conn)->lport = (u16_t)((((u16_t) (8081)) << 8) | (((u16_t) (8081)) >> 8));
+N	}
+N    UIP_udp_conn = uip_udp_new(&ipaddr, HTONS(8087));
+X    UIP_udp_conn = uip_udp_new(&ipaddr, (u16_t)((((u16_t) (8087)) << 8) | (((u16_t) (8087)) >> 8)));
+N//3. 将生成的链接绑定的一个指定的本地端口上              本地端口：8082
+N	if(UIP_udp_conn != NULL) {
+X	if(UIP_udp_conn != 0) {
+N		uip_udp_bind(UIP_udp_conn, HTONS(8082));
+X		(UIP_udp_conn)->lport = (u16_t)((((u16_t) (8082)) << 8) | (((u16_t) (8082)) >> 8));
 N	}
 N//================================================================================================	
 N	while (1)
@@ -27714,7 +27725,7 @@ N	while (1)
 N	{
 N	    //exit(0);	
 N	}
-W "..\..\Source\src\main.c" 306 2 loop is not reachable
+W "..\..\Source\src\main.c" 314 2 loop is not reachable
 W "..\..\Source\src\main.c" 183 5 variable "tcp_server_tsta" was declared but never referenced
 W "..\..\Source\src\main.c" 184 5 variable "tcp_client_tsta" was declared but never referenced
 N}
@@ -27786,8 +27797,13 @@ N		//轮流处理每个UDP连接, UIP_UDP_CONNS缺省是10个
 N		for(i=0;i<UIP_UDP_CONNS;i++)
 X		for(i=0;i<10;i++)
 N		{
-N			uip_udp_periodic(i);	//处理UDP通信事件
-X			do { uip_udp_conn = &uip_udp_conns[i]; uip_process(5); } while (0);	
+N			//uip_udp_periodic(i);	//处理UDP通信事件
+N            do 
+N            { 
+N                uip_udp_conn = &uip_udp_conns[i]; 
+N                uip_process(UIP_UDP_TIMER); 
+X                uip_process(5); 
+N            } while (0);
 N	 		//当上面的函数执行后，如果需要发送数据，则全局变量uip_len>0
 N			//需要发送的数据在uip_buf, 长度是uip_len (这是2个全局变量)
 N			if(uip_len > 0)

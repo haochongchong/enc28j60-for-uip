@@ -4,7 +4,7 @@
 .\obj\raw.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\raw.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\raw.o: ..\..\lwip\src\arch/cc.h
-.\obj\raw.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\raw.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\raw.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\raw.o: ..\..\lwip\src\include\lwip/def.h
 .\obj\raw.o: ..\..\lwip\src\include\lwip/memp.h
@@ -18,4 +18,4 @@
 .\obj\raw.o: ..\..\lwip\src\include\lwip/stats.h
 .\obj\raw.o: ..\..\lwip\src\include\lwip/mem.h
 .\obj\raw.o: ..\..\lwip\src\arch/perf.h
-.\obj\raw.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\raw.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h

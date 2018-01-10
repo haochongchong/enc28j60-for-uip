@@ -222,7 +222,7 @@ N
 N#ifndef __UIP_CONF_H__
 N#define __UIP_CONF_H__
 N#include <inttypes.h>	   
-L 1 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h" 1
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\inttypes.h" 1
 N/* Copyright (C) ARM Ltd., 1999,2014 */
 N/* All rights reserved */
 N
@@ -242,7 +242,7 @@ N#define _ARMABI __declspec(__nothrow)
 N#define _ARMABI_PURE __declspec(__nothrow) __attribute__((const))
 N
 N#include <stdint.h>
-L 1 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h" 1
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h" 1
 N/* Copyright (C) ARM Ltd., 1999,2014 */
 N/* All rights reserved */
 N
@@ -572,7 +572,7 @@ N
 N#endif /* __stdint_h */
 N
 N/* end of stdint.h */
-L 20 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h" 2
+L 20 "D:\Program Files\ARM\ARMCC\Bin\..\include\inttypes.h" 2
 N
 N#if !defined(__cplusplus) || defined(__STDC_FORMAT_MACROS) || 201103L <= __cplusplus
 X#if !0L || 0L || 201103L <= __cplusplus
@@ -3661,7 +3661,7 @@ N *
 N * \return The uip_udp_conn structure for the new connection or NULL
 N * if no connection could be allocated.
 N */
-Nstruct uip_udp_conn *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
+Nstruct uip_udp_conn_constr *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
 N
 N/**
 N * Removed a UDP connection.
@@ -4116,7 +4116,7 @@ X#if 1
 N/**
 N * Representation of a uIP UDP connection.
 N */
-Nstruct uip_udp_conn {
+Nstruct uip_udp_conn_constr {
 N  uip_ipaddr_t ripaddr;   /**< The IP address of the remote peer. */
 N  u16_t lport;        /**< The local port number in network byte order. */
 N  u16_t rport;        /**< The remote port number in network byte order. */
@@ -4129,9 +4129,9 @@ N
 N/**
 N * The current UDP connection.
 N */
-Nextern struct uip_udp_conn *uip_udp_conn;
-Nextern struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS];
-Xextern struct uip_udp_conn uip_udp_conns[10];
+Nextern struct uip_udp_conn_constr *uip_udp_conn;
+Nextern struct uip_udp_conn_constr uip_udp_conns[UIP_UDP_CONNS];
+Xextern struct uip_udp_conn_constr uip_udp_conns[10];
 N#endif /* UIP_UDP */
 N
 N/**

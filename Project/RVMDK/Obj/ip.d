@@ -4,7 +4,7 @@
 .\obj\ip.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\ip.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\ip.o: ..\..\lwip\src\arch/cc.h
-.\obj\ip.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\ip.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\ip.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\ip.o: ..\..\lwip\src\include\ipv4\lwip/ip.h
 .\obj\ip.o: ..\..\lwip\src\include\lwip/def.h
@@ -28,4 +28,4 @@
 .\obj\ip.o: ..\..\lwip\src\include\lwip/memp.h
 .\obj\ip.o: ..\..\lwip\src\include\lwip/memp_std.h
 .\obj\ip.o: ..\..\lwip\src\arch/perf.h
-.\obj\ip.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\ip.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h

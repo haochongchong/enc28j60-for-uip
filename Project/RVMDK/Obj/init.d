@@ -4,7 +4,7 @@
 .\obj\init.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\init.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\init.o: ..\..\lwip\src\arch/cc.h
-.\obj\init.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\init.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\init.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\init.o: ..\..\lwip\src\include\lwip/init.h
 .\obj\init.o: ..\..\lwip\src\include\lwip/stats.h

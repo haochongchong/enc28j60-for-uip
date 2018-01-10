@@ -5,7 +5,7 @@
 .\obj\lwipdemo.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\lwipdemo.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\lwipdemo.o: ..\..\lwip\src\arch/cc.h
-.\obj\lwipdemo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\lwipdemo.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\lwipdemo.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\lwipdemo.o: ..\..\lwip\src\include\lwip/err.h
 .\obj\lwipdemo.o: ..\..\lwip\src\include\ipv4\lwip/ip_addr.h

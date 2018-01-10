@@ -6,7 +6,7 @@
 .\obj\loopback.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\loopback.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\loopback.o: ..\..\lwip\src\arch/cc.h
-.\obj\loopback.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\loopback.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\loopback.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\loopback.o: ..\..\lwip\src\include\lwip/mem.h
 .\obj\loopback.o: ..\..\lwip\src\include\lwip/pbuf.h
@@ -16,4 +16,4 @@
 .\obj\loopback.o: ..\..\lwip\src\include\ipv4\lwip/ip_addr.h
 .\obj\loopback.o: ..\..\lwip\src\include\lwip/netif.h
 .\obj\loopback.o: ..\..\lwip\src\include\ipv4\lwip/icmp.h
-.\obj\loopback.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\loopback.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h

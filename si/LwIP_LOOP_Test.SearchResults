@@ -1,3 +1,0 @@
----- netif_set_link_up Matches (2 in 2 files) ----
-Netif.c (lwip\src\core):void netif_set_link_up(struct netif *netif )
-Netif.h (lwip\src\include\lwip):void netif_set_link_up(struct netif *netif);

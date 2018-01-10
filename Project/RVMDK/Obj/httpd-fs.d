@@ -3,8 +3,8 @@
 .\obj\httpd-fs.o: ..\..\Source\uIP-1.0\uip\psock.h
 .\obj\httpd-fs.o: ..\..\Source\uIP-1.0\uip\uipopt.h
 .\obj\httpd-fs.o: ..\..\Source\uIP-APP\uip-conf.h
-.\obj\httpd-fs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h
-.\obj\httpd-fs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\httpd-fs.o: D:\Program Files\ARM\ARMCC\Bin\..\include\inttypes.h
+.\obj\httpd-fs.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\httpd-fs.o: ..\..\Source\uIP-APP\tcp_demo.h
 .\obj\httpd-fs.o: ..\..\Source\uIP-1.0\uip\uipopt.h
 .\obj\httpd-fs.o: ..\..\Source\uIP-1.0\uip\psock.h

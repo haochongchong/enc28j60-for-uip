@@ -4,7 +4,7 @@
 .\obj\tcp_in.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\tcp_in.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\tcp_in.o: ..\..\lwip\src\arch/cc.h
-.\obj\tcp_in.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\tcp_in.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\tcp_in.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\tcp_in.o: ..\..\lwip\src\include\lwip/tcp_impl.h
 .\obj\tcp_in.o: ..\..\lwip\src\include\lwip/tcp.h

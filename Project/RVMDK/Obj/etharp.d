@@ -4,7 +4,7 @@
 .\obj\etharp.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\etharp.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\etharp.o: ..\..\lwip\src\arch/cc.h
-.\obj\etharp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\etharp.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\etharp.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\etharp.o: ..\..\lwip\src\include\ipv4\lwip/ip_addr.h
 .\obj\etharp.o: ..\..\lwip\src\include\lwip/def.h
@@ -20,4 +20,4 @@
 .\obj\etharp.o: ..\..\lwip\src\include\lwip/dhcp.h
 .\obj\etharp.o: ..\..\lwip\src\include\ipv4\lwip/autoip.h
 .\obj\etharp.o: ..\..\lwip\src\include\netif/etharp.h
-.\obj\etharp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\etharp.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h

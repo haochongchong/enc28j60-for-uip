@@ -4,7 +4,7 @@
 .\obj\timers.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\timers.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\timers.o: ..\..\lwip\src\arch/cc.h
-.\obj\timers.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\timers.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\timers.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\timers.o: ..\..\lwip\src\include\lwip/timers.h
 .\obj\timers.o: ..\..\lwip\src\include\lwip/err.h

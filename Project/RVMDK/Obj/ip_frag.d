@@ -4,7 +4,7 @@
 .\obj\ip_frag.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\ip_frag.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\ip_frag.o: ..\..\lwip\src\arch/cc.h
-.\obj\ip_frag.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\ip_frag.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\ip_frag.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\ip_frag.o: ..\..\lwip\src\include\ipv4\lwip/ip_frag.h
 .\obj\ip_frag.o: ..\..\lwip\src\include\lwip/err.h
@@ -20,4 +20,4 @@
 .\obj\ip_frag.o: ..\..\lwip\src\include\lwip/memp.h
 .\obj\ip_frag.o: ..\..\lwip\src\include\lwip/memp_std.h
 .\obj\ip_frag.o: ..\..\lwip\src\include\ipv4\lwip/icmp.h
-.\obj\ip_frag.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\ip_frag.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h

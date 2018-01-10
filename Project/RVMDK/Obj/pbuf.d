@@ -4,7 +4,7 @@
 .\obj\pbuf.o: ..\..\lwip\src\include\lwip/debug.h
 .\obj\pbuf.o: ..\..\lwip\src\include\lwip/arch.h
 .\obj\pbuf.o: ..\..\lwip\src\arch/cc.h
-.\obj\pbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\pbuf.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\pbuf.o: ..\..\lwip\src\include\lwip/opt.h
 .\obj\pbuf.o: ..\..\lwip\src\include\lwip/stats.h
 .\obj\pbuf.o: ..\..\lwip\src\include\lwip/mem.h
@@ -21,4 +21,4 @@
 .\obj\pbuf.o: ..\..\lwip\src\include\ipv4\lwip/ip_addr.h
 .\obj\pbuf.o: ..\..\lwip\src\include\lwip/netif.h
 .\obj\pbuf.o: ..\..\lwip\src\include\ipv4\lwip/icmp.h
-.\obj\pbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\pbuf.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h

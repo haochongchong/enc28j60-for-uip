@@ -1,10 +1,10 @@
 .\obj\tapdev.o: ..\..\Source\uIP-APP\tapdev.c
 .\obj\tapdev.o: ..\..\Source\uIP-APP\tapdev.h
-.\obj\tapdev.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\tapdev.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\tapdev.o: ..\..\Source\uIP-1.0\uip\uip.h
 .\obj\tapdev.o: ..\..\Source\uIP-1.0\uip\uipopt.h
 .\obj\tapdev.o: ..\..\Source\uIP-APP\uip-conf.h
-.\obj\tapdev.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h
+.\obj\tapdev.o: D:\Program Files\ARM\ARMCC\Bin\..\include\inttypes.h
 .\obj\tapdev.o: ..\..\Source\uIP-APP\tcp_demo.h
 .\obj\tapdev.o: ..\..\Source\uIP-1.0\uip\uipopt.h
 .\obj\tapdev.o: ..\..\Source\uIP-1.0\uip\psock.h
