@@ -837,6 +837,10 @@ uip_process(u8_t flag)
     
 //================================================================    
 #if UIP_UDP
+	//**********************************************
+	//*     这里要注意，无论是UDP 的主动发送 和 接收处理都是在调用 UIP_UDP_APPCALL()， 因此要在回调函数中加以区分
+	//**********************************************
+	
     if(flag == UIP_UDP_TIMER) 
     {
         if(uip_udp_conn->lport != 0) 
@@ -858,7 +862,11 @@ uip_process(u8_t flag)
 
     
     /* This is where the input processing starts. */
-  //   这里IP包的处理正式开始
+
+/*
+------------------->>>>>>>>>>>>>>>>>>>>>>   这里IP包的处理正式开始
+*/
+	//1. 检查版本号 和首部长度
     UIP_STAT(++uip_stat.ip.recv);
 
     /* Start of IP input header processing code. */
@@ -889,7 +897,7 @@ uip_process(u8_t flag)
      uip_len is larger than the size reported in the IP packet header,
      the packet has been padded and we set uip_len to the correct
      value.. */
-
+	// 2. 检查总长度
     if((BUF->len[0] << 8) + BUF->len[1] <= uip_len) 
     {
         uip_len = (BUF->len[0] << 8) + BUF->len[1];
@@ -905,13 +913,13 @@ uip_process(u8_t flag)
           for IPv6 we need to add the size of the IPv6
           header (40 bytes). */
 #endif /* UIP_CONF_IPV6 */
-    } 
+    }
     else 
     {
         UIP_LOG("ip: packet shorter than reported in IP header.");
         goto drop;
     }
-
+	//3. 暂时不接收分片
 #if !UIP_CONF_IPV6
     /* Check the fragment flag. */
     if((BUF->ipoffset[0] & 0x3f) != 0 ||
@@ -931,7 +939,7 @@ uip_process(u8_t flag)
 #endif /* UIP_REASSEMBLY */
     }
 #endif /* UIP_CONF_IPV6 */
-
+	//  4. 如果本机是全0地址，那么在此前提下判断是否使用ICMP的ping 来设置IP地址
     if(uip_ipaddr_cmp(uip_hostaddr, all_zeroes_addr)) 
     {
         /* If we are configured to use ping IP address configuration and
@@ -965,12 +973,13 @@ uip_process(u8_t flag)
         }
 #endif /* UIP_BROADCAST */
     
+		//检查 dest IP 地址是不是和本机地址一致
     /* Check if the packet is destined for our IP address. */
 #if !UIP_CONF_IPV6
         if(!uip_ipaddr_cmp(BUF->destipaddr, uip_hostaddr)) 
         {
             UIP_STAT(++uip_stat.ip.drop);
-            goto drop;
+            goto drop;//不一致直接丢弃
         }
 #else /* UIP_CONF_IPV6 */
     /* For IPv6, packet reception is a little trickier as we need to
@@ -987,6 +996,7 @@ uip_process(u8_t flag)
 #endif /* UIP_CONF_IPV6 */
     }
 
+	//5.  检查校验和
 #if !UIP_CONF_IPV6
     if(uip_ipchksum() != 0xffff) 
     { /* Compute and check the IP header
@@ -997,7 +1007,10 @@ uip_process(u8_t flag)
         goto drop;
     }
 #endif /* UIP_CONF_IPV6 */
-
+	//6. ================>>>>>>>>>   
+	//       TCP
+	//       UDP
+	//       ICMP
     if(BUF->proto == UIP_PROTO_TCP) 
     { /* Check for TCP packet. If so,
 				       proceed with TCP input
@@ -1012,6 +1025,7 @@ uip_process(u8_t flag)
     }
 #endif /* UIP_UDP */
 
+	//如果到这里还没有转入到TCP 和UDP 的处理，那么就看是不是ICMP了，如果不是就直接丢弃
 #if !UIP_CONF_IPV6
     /* ICMPv4 processing code follows. */
     if(BUF->proto != UIP_PROTO_ICMP) 
@@ -1114,7 +1128,6 @@ uip_process(u8_t flag)
             ICMPBUF->icmpchksum = 0;
             ICMPBUF->icmpchksum = ~uip_icmp6chksum();
             goto send;
-      
         }
         goto drop;
     } 
@@ -2022,20 +2035,23 @@ uip_process(u8_t flag)
     return;
 }
 /*---------------------------------------------------------------------------*/
-u16_t
-htons(u16_t val)
+u16_t htons(u16_t val)
 {
   return HTONS(val);
 }
 /*---------------------------------------------------------------------------*/
-void
-uip_send(const void *data, int len)
+
+
+void uip_send(const void *data, int len)
 {
-  if(len > 0) {
-    uip_slen = len;
-    if(data != uip_sappdata) {
-      memcpy(uip_sappdata, (data), uip_slen);
-    }
-  }
+	if(len > 0) 
+	{
+		uip_slen = len;
+		if(data != uip_sappdata) 
+		{
+			memcpy(uip_sappdata, (data), uip_slen);
+		}
+	}
 }
+
 /** @} */

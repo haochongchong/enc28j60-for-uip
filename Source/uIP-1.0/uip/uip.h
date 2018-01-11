@@ -1405,7 +1405,7 @@ struct uip_tcpip_hdr {
   u16_t srcipaddr[2],
     destipaddr[2];
 #endif /* UIP_CONF_IPV6 */
-  
+  //由此可见IPv6  和IPv4的TCP协议是一样的
   /* TCP header. */
   u16_t srcport,
     destport;

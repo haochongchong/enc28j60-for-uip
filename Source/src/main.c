@@ -190,7 +190,7 @@ int main(void)
 
 	/* 配置systic作为20ms中断 */
 	if (SysTick_Config(20*72000))		//时钟节拍中断，20ms一次
-    { 
+    {
     	/* error handle*/ 
      	while (1);
     }
